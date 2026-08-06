@@ -396,7 +396,14 @@
       z-index: 25;
       text-align: center;
       transition: opacity 0.4s ease, transform 0.4s ease;
-      pointer-events: none;
+      pointer-events: auto;
+    }
+
+    .hero-logo-wrapper {
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     .hero-brand-logo-img {
@@ -404,11 +411,71 @@
       width: auto;
       display: block;
       margin: 0 auto;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+      filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
+    }
+
+    .hero-logo-wrapper:hover .hero-brand-logo-img {
+      transform: scale(1.06) translateY(-2px);
+      filter: drop-shadow(0 8px 25px rgba(2, 132, 199, 0.65));
+    }
+
+    /* Popup Animation Badge on Hover */
+    .hero-logo-popup {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%) translateY(8px) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(8, 24, 38, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1.5px solid rgba(2, 132, 199, 0.6);
+      border-radius: var(--radius-full);
+      padding: 0.45rem 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(2, 132, 199, 0.35);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-logo-popup::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background: rgba(8, 24, 38, 0.92);
+      border-top: 1.5px solid rgba(2, 132, 199, 0.6);
+      border-left: 1.5px solid rgba(2, 132, 199, 0.6);
+    }
+
+    .hero-logo-popup span {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .hero-logo-popup .popup-tag {
+      color: #0284C7;
+    }
+
+    .hero-logo-wrapper:hover .hero-logo-popup {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
     }
 
     .hero-brand-overlay.hidden {
       opacity: 0;
       transform: translate(-50%, -20px);
+      pointer-events: none;
     }
 
     /* Fixed Light Glassmorphism Navigation Bar (Revealed ONLY after reaching downstream content — Matches Screenshot 3) */
@@ -2573,9 +2640,15 @@
           <span>Swipe to Explore</span>
         </div>
 
-        <!-- Top-Center Hero Logo Overlay (Initial View) -->
+        <!-- Top-Center Hero Logo Overlay (Initial View with Hover Popup) -->
         <div class="hero-brand-overlay" id="hero-brand-overlay">
-          <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd Logo" class="hero-brand-logo-img">
+          <a href="#scrolly-outer" class="hero-logo-wrapper" aria-label="WellSpace Cleaning Ltd Home">
+            <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd Logo" class="hero-brand-logo-img">
+            <div class="hero-logo-popup">
+              <span class="popup-sparkle">✨</span>
+              <span>Victoria's <span class="popup-tag">#1 Eco Clean</span></span>
+            </div>
+          </a>
         </div>
 
         <!-- Narrative Story Beats Overlays -->
