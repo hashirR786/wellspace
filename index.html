@@ -2435,8 +2435,8 @@
        ========================================================================== */
     .whatsapp-float {
       position: fixed;
-      bottom: clamp(3.5rem, 8.5vh, 5.5rem);
-      right: clamp(5rem, 8.5vw, 7.5rem);
+      bottom: 1.5rem;
+      right: 1.5rem;
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -2531,6 +2531,32 @@
     }
 
     @media (max-width: 768px) {
+      .hero-brand-logo-img {
+        height: clamp(75px, 20vw, 98px);
+      }
+
+      .scrolly-narrative-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 1.25rem;
+      }
+
+      .scrolly-beat {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .scrolly-title {
+        text-align: center !important;
+        font-size: clamp(2.3rem, 7.8vw, 3.4rem);
+        margin: 0 auto;
+      }
+
       .brand-header-row {
         padding: 0.75rem 0 0.5rem 0;
       }
