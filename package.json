@@ -1,0 +1,12 @@
+{
+  "name": "wellspace-cleaning-website",
+  "version": "1.0.0",
+  "description": "WellSpace Cleaning Ltd - Single Page Website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server . -p 8080 -o",
+    "start": "npx -y http-server . -p 8080 -o"
+  },
+  "author": "WellSpace Cleaning Ltd",
+  "license": "ISC"
+}
