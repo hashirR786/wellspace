@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us & Request a Free Quote | WellSpace Cleaning Ltd - Victoria BC</title>
+  <meta name="description" content="Contact WellSpace Cleaning Ltd in Victoria BC. Call +1 7789904883, email info@wellspacecleaning.ca, or submit our online quote request form. Eco-friendly residential & commercial cleaning.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-white: #FFFFFF;
+      --color-offwhite: #F4F8FB;
+      --color-dark-navy: #0E2A47;
+      --color-deep-navy: #081826;
+      --color-sky-blue: #4FA3D1;
+      --color-light-sky: #D9ECF6;
+      --color-grey: #63707F;
+      --color-hairline-grey: #E2E8EF;
+      --color-whatsapp: #25D366;
+      --font-body: 'Poppins', system-ui, -apple-system, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 4px 12px rgba(8, 24, 38, 0.04);
+      --shadow-md: 0 10px 30px rgba(8, 24, 38, 0.08);
+      --shadow-lg: 0 20px 50px rgba(8, 24, 38, 0.12);
+      --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; background-color: var(--color-offwhite); color: var(--color-dark-navy); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+    body { overflow-x: hidden; line-height: 1.6; min-height: 100vh; }
+    body.menu-open { overflow: hidden; }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* Header */
+    .site-header {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 4px 20px rgba(8, 24, 38, 0.06);
+      padding: 0.65rem 0;
+    }
+    .nav-inner-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+    .nav-logo-img { height: 44px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-link {
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-dark-navy);
+      text-decoration: none; text-transform: uppercase; transition: color var(--transition-fast); position: relative;
+    }
+    .nav-link:hover, .nav-link.active { color: #0284C7; }
+    .nav-link.active::after {
+      content: ''; position: absolute; bottom: -6px; left: 0; width: 100%; height: 2px;
+      background-color: #0284C7; border-radius: var(--radius-full);
+    }
+    .header-nav-actions { display: flex; align-items: center; gap: 1rem; }
+    .nav-cta-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.55rem 1.35rem; border-radius: var(--radius-full);
+      background-color: var(--color-dark-navy); color: var(--color-white);
+      font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: all var(--transition-fast);
+    }
+    .nav-cta-btn:hover { background-color: #0284C7; transform: translateY(-2px); }
+
+    .mobile-nav-toggle {
+      display: none; background: none; border: none; color: var(--color-dark-navy);
+      cursor: pointer; padding: 0.5rem; min-width: 44px; min-height: 44px; align-items: center; justify-content: center;
+    }
+    .mobile-nav-toggle svg { width: 26px; height: 26px; }
+
+    /* Page Hero */
+    .page-hero {
+      padding: 9rem 0 4rem 0; background: linear-gradient(135deg, #0E2A47 0%, #081826 100%);
+      color: var(--color-white); text-align: center; position: relative; overflow: hidden;
+    }
+    .page-hero-title { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 800; margin-bottom: 0.75rem; }
+    .page-hero-desc { font-size: clamp(1rem, 2vw, 1.2rem); color: rgba(255,255,255,0.8); max-width: 680px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; padding: 0.3rem 0.9rem; border-radius: var(--radius-full);
+      background: rgba(79, 163, 209, 0.15); color: #0284C7; font-size: 0.78rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
+    }
+
+    /* Contact Grid */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 3rem; margin: 3rem 0; }
+    @media (max-width: 991px) { .contact-grid { grid-template-columns: 1fr; } }
+
+    .contact-card-box {
+      background: var(--color-white); border-radius: var(--radius-lg); padding: 2.5rem;
+      border: 1px solid var(--color-hairline-grey); box-shadow: var(--shadow-md);
+    }
+    .contact-card-box h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; color: var(--color-dark-navy); }
+    .contact-card-box p { color: var(--color-grey); margin-bottom: 2rem; }
+
+    .contact-info-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-info-item { display: flex; align-items: flex-start; gap: 1rem; }
+    .contact-info-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(79, 163, 209, 0.12);
+      color: #0284C7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .contact-info-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+    .contact-info-label { font-size: 0.85rem; font-weight: 700; color: var(--color-grey); text-transform: uppercase; }
+    .contact-info-value { font-size: 1.1rem; font-weight: 700; color: var(--color-dark-navy); text-decoration: none; display: inline-block; margin-top: 0.2rem; }
+    .contact-info-value:hover { color: #0284C7; }
+
+    /* Form */
+    .quote-form-card {
+      background: var(--color-white); border-radius: var(--radius-lg); padding: 2.5rem;
+      border: 1px solid var(--color-hairline-grey); box-shadow: var(--shadow-md);
+    }
+    .quote-form-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--color-dark-navy); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .form-label { font-size: 0.88rem; font-weight: 700; color: var(--color-dark-navy); }
+    .form-control { padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--color-hairline-grey); font-family: var(--font-body); font-size: 0.95rem; }
+    textarea.form-control { resize: vertical; min-height: 120px; }
+
+    .btn-google-maps {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; padding: 0.8rem 1.6rem;
+      border-radius: var(--radius-full); background: #FFFFFF; color: #1A73E8; font-weight: 700; font-size: 0.92rem;
+      text-decoration: none; border: 1px solid rgba(26, 115, 232, 0.25); box-shadow: 0 4px 16px rgba(26, 115, 232, 0.15); transition: all var(--transition-fast);
+    }
+    .btn-google-maps:hover { background: #1A73E8; color: #FFFFFF; transform: translateY(-2px); }
+    .btn-google-maps svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem 2rem; border-radius: var(--radius-full); font-weight: 700; text-decoration: none; cursor: pointer; border: none; }
+    .btn-primary { background: #0284C7; color: #FFFFFF; }
+    .btn-primary:hover { background: #0050FF; transform: translateY(-2px); }
+
+    /* Footer */
+    .site-footer { background: #081826; color: #FFFFFF; padding: 4rem 0 2rem 0; margin-top: 4rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem; margin-bottom: 3rem; }
+    .footer-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+    .footer-links { list-style: none; }
+    .footer-link { color: rgba(255,255,255,0.7); text-decoration: none; display: block; margin-bottom: 0.6rem; font-size: 0.92rem; }
+    .footer-link:hover { color: #0284C7; }
+
+    /* Floating WhatsApp */
+    .whatsapp-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; text-decoration: none; }
+    .whatsapp-badge { width: 60px; height: 60px; background: var(--color-whatsapp); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(37,211,102,0.4); }
+    .whatsapp-badge svg { width: 34px; height: 34px; fill: currentColor; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-nav-toggle { display: flex; }
+      .mobile-drawer {
+        position: fixed; top: 0; right: 0; width: 280px; height: 100vh; background: #FFFFFF; z-index: 1001;
+        padding: 4rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; transform: translateX(100%); transition: transform 0.3s ease;
+      }
+      .mobile-drawer.open { transform: translateX(0); }
+      .mobile-drawer-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+      .mobile-drawer-backdrop.open { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="nav-inner-row">
+        <a href="index.html" class="header-nav-logo">
+          <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd Logo" class="nav-logo-img">
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html" class="nav-link">HOME</a></li>
+            <li><a href="services.html" class="nav-link">SERVICES</a></li>
+            <li><a href="pricing.html" class="nav-link">PRICING</a></li>
+            <li><a href="about.html" class="nav-link">ABOUT US</a></li>
+            <li><a href="contact.html" class="nav-link active">CONTACT</a></li>
+          </ul>
+        </nav>
+        <div class="header-nav-actions">
+          <a href="contact.html" class="nav-cta-btn">Free Quote</a>
+          <button class="mobile-nav-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-drawer-backdrop" id="drawer-backdrop" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="services.html" class="nav-link">Services</a>
+    <a href="pricing.html" class="nav-link">Pricing & Plans</a>
+    <a href="about.html" class="nav-link">About Us</a>
+    <a href="contact.html" class="nav-link active">Contact</a>
+    <a href="contact.html" class="btn btn-primary" style="margin-top: 1rem;">Request a Free Quote</a>
+  </div>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-tag" style="background: rgba(255,255,255,0.1); color: #4FA3D1;">Get In Touch</span>
+      <h1 class="page-hero-title">Contact Us & Request a Free Quote</h1>
+      <p class="page-hero-desc">Have questions or ready to book your clean? Call, email, WhatsApp us, or complete our quick quote request form below.</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="contact-grid">
+      
+      <!-- Contact Cards -->
+      <div class="contact-card-box">
+        <h2>We're Here to Help</h2>
+        <p>Get fast answers and instant quote estimates from our Victoria, BC cleaning team.</p>
+
+        <div class="contact-info-list">
+          <!-- Item 1: Phone -->
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Call Us Directly</div>
+              <a href="tel:+17789904883" class="contact-info-value">+1 (778) 990-4883</a>
+            </div>
+          </div>
+
+          <!-- Item 2: WhatsApp -->
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background: rgba(37,211,102,0.15); color: #25D366;">
+              <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.993L2 22l5.233-1.237a9.96 9.96 0 004.779 1.221h.005c5.505 0 9.988-4.478 9.989-9.984A9.99 9.99 0 0012.012 2zm.005 16.59h-.004a8.31 8.31 0 01-4.238-1.166l-.304-.18-3.146.743.758-3.07-.198-.314a8.3 8.3 0 01-1.272-4.417c0-4.582 3.729-8.311 8.312-8.312a8.28 8.28 0 015.877 2.434 8.28 8.28 0 012.43 5.876c0 4.583-3.728 8.312-8.31 8.312zm4.557-6.223c-.25-.125-1.478-.728-1.707-.811-.228-.083-.395-.125-.561.125-.167.25-.644.811-.79 0.978-.146.166-.292.187-.542.062a6.85 6.85 0 01-2.014-1.242 7.55 7.55 0 01-1.393-1.737c-.146-.25-.015-.386.11-.51.112-.112.25-.292.375-.438.125-.145.166-.25.25-.416.083-.166.041-.312-.021-.437-.063-.125-.562-1.354-.77-1.854-.203-.487-.41-.421-.562-.429h-.479c-.166 0-.437.062-.666.312-.229.25-.875.854-.875 2.083s.896 2.417 1.02 2.584c.125.166 1.764 2.693 4.275 3.777.597.258 1.064.412 1.427.527.6.19 1.147.163 1.579.099.481-.071 1.478-.604 1.686-1.188.208-.583.208-1.083.146-1.188-.063-.104-.229-.166-.479-.291z"></path></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">WhatsApp Chat</div>
+              <a href="https://wa.me/17789904883" target="_blank" rel="noopener" class="contact-info-value">+1 (778) 990-4883</a>
+            </div>
+          </div>
+
+          <!-- Item 3: Email -->
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Email Us</div>
+              <a href="mailto:info@wellspacecleaning.ca" class="contact-info-value">info@wellspacecleaning.ca</a>
+            </div>
+          </div>
+
+          <!-- Item 4: Service Areas -->
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Service Headquarters</div>
+              <div class="contact-info-value" style="font-size: 1rem;">Greater Victoria, BC</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <a href="https://maps.google.com/?q=Victoria,+BC,+Canada" target="_blank" rel="noopener" class="btn-google-maps">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+            <span>Open in Google Maps (Victoria, BC)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Online Quote Form -->
+      <div class="quote-form-card">
+        <h2>Online Quote Request</h2>
+        <form id="contact-quote-form" onsubmit="handleQuoteSubmit(event)">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="user-name" class="form-label">Full Name *</label>
+              <input type="text" id="user-name" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+            </div>
+            <div class="form-group">
+              <label for="user-email" class="form-label">Email Address *</label>
+              <input type="email" id="user-email" class="form-control" placeholder="e.g. sarah@example.com" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="user-phone" class="form-label">Phone Number *</label>
+              <input type="tel" id="user-phone" class="form-control" placeholder="e.g. (778) 990-4883" required>
+            </div>
+            <div class="form-group">
+              <label for="user-area" class="form-label">Service Area *</label>
+              <select id="user-area" class="form-control" required>
+                <option value="" disabled selected>Select Area...</option>
+                <option value="Victoria">Victoria</option>
+                <option value="Langford">Langford</option>
+                <option value="Saanich">Saanich</option>
+                <option value="Esquimalt">Esquimalt</option>
+                <option value="Oak Bay">Oak Bay</option>
+                <option value="View Royal">View Royal</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="user-service" class="form-label">Service Type *</label>
+              <select id="user-service" class="form-control" required>
+                <option value="" disabled selected>Select Service...</option>
+                <option value="Residential Cleaning">Residential Cleaning</option>
+                <option value="Commercial Cleaning">Office & Commercial Cleaning</option>
+                <option value="Deep Cleaning">Deep Cleaning</option>
+                <option value="Move-In/Move-Out">Move-In / Move-Out Cleaning</option>
+                <option value="Recurring Cleaning">Regular Recurring Cleaning</option>
+                <option value="Custom Request">Custom Cleaning Request</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="user-frequency" class="form-label">Service Frequency *</label>
+              <select id="user-frequency" class="form-control" required>
+                <option value="" disabled selected>Select Frequency...</option>
+                <option value="One-Time Cleaning">One-Time Cleaning</option>
+                <option value="Weekly (20% Off)">Weekly (Save 20%)</option>
+                <option value="Bi-Weekly (15% Off)">Bi-Weekly (Save 15%)</option>
+                <option value="Monthly (10% Off)">Monthly (Save 10%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="user-date" class="form-label">Preferred Date</label>
+              <input type="date" id="user-date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="user-size" class="form-label">Property Size (approx sq ft)</label>
+              <input type="text" id="user-size" class="form-control" placeholder="e.g. 1,800 sq ft, 3 bed / 2 bath">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="user-message" class="form-label">Additional Details / Notes</label>
+            <textarea id="user-message" class="form-control" placeholder="Tell us about specific cleaning priorities, pet information, or key access details..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;">
+            Submit & Send Quote Email →
+          </button>
+          <p style="font-size: 0.8rem; color: var(--color-grey); text-align: center; margin-top: 0.5rem;">Launches your default mail application with pre-filled quote details.</p>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4 class="footer-title">WellSpace Cleaning Ltd</h4>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Victoria's premier residential & commercial eco-friendly cleaning specialists.</p>
+        </div>
+        <div>
+          <h4 class="footer-title">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="services.html" class="footer-link">Services</a></li>
+            <li><a href="pricing.html" class="footer-link">Pricing & Plans</a></li>
+            <li><a href="about.html" class="footer-link">About Us</a></li>
+            <li><a href="contact.html" class="footer-link">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Contact Info</h4>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">Phone: +1 (778) 990-4883</p>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">Email: info@wellspacecleaning.ca</p>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Serving Greater Victoria, BC</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/17789904883" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
+    <div class="whatsapp-badge">
+      <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.993L2 22l5.233-1.237a9.96 9.96 0 004.779 1.221h.005c5.505 0 9.988-4.478 9.989-9.984A9.99 9.99 0 0012.012 2zm.005 16.59h-.004a8.31 8.31 0 01-4.238-1.166l-.304-.18-3.146.743.758-3.07-.198-.314a8.3 8.3 0 01-1.272-4.417c0-4.582 3.729-8.311 8.312-8.312a8.28 8.28 0 015.877 2.434 8.28 8.28 0 012.43 5.876c0 4.583-3.728 8.312-8.31 8.312zm4.557-6.223c-.25-.125-1.478-.728-1.707-.811-.228-.083-.395-.125-.561.125-.167.25-.644.811-.79 0.978-.146.166-.292.187-.542.062a6.85 6.85 0 01-2.014-1.242 7.55 7.55 0 01-1.393-1.737c-.146-.25-.015-.386.11-.51.112-.112.25-.292.375-.438.125-.145.166-.25.25-.416.083-.166.041-.312-.021-.437-.063-.125-.562-1.354-.77-1.854-.203-.487-.41-.421-.562-.429h-.479c-.166 0-.437.062-.666.312-.229.25-.875.854-.875 2.083s.896 2.417 1.02 2.584c.125.166 1.764 2.693 4.275 3.777.597.258 1.064.412 1.427.527.6.19 1.147.163 1.579.099.481-.071 1.478-.604 1.686-1.188.208-.583.208-1.083.146-1.188-.063-.104-.229-.166-.479-.291z"></path></svg>
+    </div>
+  </a>
+
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobile-drawer').classList.toggle('open');
+      document.getElementById('drawer-backdrop').classList.toggle('open');
+      document.body.classList.toggle('menu-open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const serviceParam = urlParams.get('service');
+      if (serviceParam) {
+        const serviceSelect = document.getElementById('user-service');
+        if (serviceSelect) {
+          for (let option of serviceSelect.options) {
+            if (option.value.toLowerCase().includes(serviceParam.toLowerCase()) || serviceParam.toLowerCase().includes(option.value.toLowerCase())) {
+              option.selected = true;
+              break;
+            }
+          }
+        }
+      }
+    });
+
+    function handleQuoteSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('user-name').value;
+      const email = document.getElementById('user-email').value;
+      const phone = document.getElementById('user-phone').value;
+      const area = document.getElementById('user-area').value;
+      const service = document.getElementById('user-service').value;
+      const frequency = document.getElementById('user-frequency').value;
+      const date = document.getElementById('user-date').value || 'Flexible';
+      const size = document.getElementById('user-size').value || 'Not specified';
+      const message = document.getElementById('user-message').value || 'None';
+
+      const subject = `[Quote Request] WellSpace Cleaning - ${service} (${area})`;
+      const body = `Hello WellSpace Cleaning Team,
+
+I would like to request a free quote for cleaning services.
+
+Customer Details:
+----------------
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+
+Service Requirements:
+--------------------
+Service Type: ${service}
+Frequency: ${frequency}
+Service Area: ${area}
+Property Size: ${size}
+Preferred Date: ${date}
+
+Additional Notes:
+----------------
+${message}
+
+Thank you,
+${name}`;
+
+      const mailtoUrl = `mailto:info@wellspacecleaning.ca?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoUrl;
+    }
+  </script>
+</body>
+</html>
