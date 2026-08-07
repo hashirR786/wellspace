@@ -3353,6 +3353,7 @@
        AWWARDS-LEVEL 300-FRAME SCROLLYTELLING ENGINE
        ============================================================ */
     function init300FramesScrollytelling() {
+      const isMobile = () => window.innerWidth <= 768;
       const isMobileView = isMobile();
       const TOTAL_FRAMES = isMobileView ? 160 : 120;
       const MOBILE_STEP = 1; // Load smooth full 160 portrait frames on mobile
