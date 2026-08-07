@@ -3385,10 +3385,11 @@
         return `./public/frames160/frame_${numStr}.png`;
       }
 
-      // Build the frame index list: mobile skips every other frame
+      // Build the frame index list: mobile starts from frame 002 (skipping blurry frame 001)
       const frameIndices = [];
+      const startFrame = isMobileView ? 2 : 1;
       const step = isMobile() ? MOBILE_STEP : 1;
-      for (let i = 1; i <= TOTAL_FRAMES; i += step) {
+      for (let i = startFrame; i <= TOTAL_FRAMES; i += step) {
         frameIndices.push(i);
       }
 
