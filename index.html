@@ -2840,11 +2840,11 @@
       text-transform: uppercase;
     }
 
-    /* Subtle Loading Progress Bar */
+    /* Loading Progress Bar */
     .curtain-progress-track {
       width: 100%;
       height: 3px;
-      background: rgba(14, 42, 71, 0.1);
+      background: rgba(14, 42, 71, 0.12);
       border-radius: 4px;
       overflow: hidden;
       margin-top: 0.25rem;
@@ -2852,6 +2852,9 @@
 
     .curtain-progress-bar {
       height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284C7, #38BDF8);
+      border-radius: 4px;
       box-shadow: 0 0 10px #38BDF8;
       transition: width 0.15s ease-out;
     }
@@ -4811,7 +4814,7 @@ ${name}`;
     }
 
     /* ============================================================
-       CURTAIN-STYLE LOADING SCREEN CONTROLLER
+       CURTAIN-STYLE LOADING SCREEN CONTROLLER & NAV INTERCEPTOR
        ============================================================ */
     (function initCurtainLoader() {
       const loader = document.getElementById('site-preloader');
@@ -4821,7 +4824,7 @@ ${name}`;
       let hasFinished = false;
       let currentProgress = 0;
 
-      // Real-time progress tracker called during image & frame downloads
+      // Real-time progress tracker
       window.updateCurtainProgress = function(loaded, total) {
         if (hasFinished) return;
         const targetPercent = Math.min(98, Math.round((loaded / total) * 100));
@@ -4833,12 +4836,12 @@ ${name}`;
 
       // Baseline progress simulation
       const progressInterval = setInterval(() => {
-        if (currentProgress < 85) {
-          currentProgress += Math.floor(Math.random() * 4) + 2;
-          if (currentProgress > 85) currentProgress = 85;
+        if (currentProgress < 90) {
+          currentProgress += Math.floor(Math.random() * 8) + 4;
+          if (currentProgress > 90) currentProgress = 90;
           if (progressBar) progressBar.style.width = currentProgress + '%';
         }
-      }, 90);
+      }, 70);
 
       function openCurtains() {
         if (hasFinished) return;
@@ -4854,16 +4857,32 @@ ${name}`;
           setTimeout(() => {
             loader.classList.add('curtain-done');
           }, 1100);
-        }, 350);
+        }, 300);
       }
 
-      // Trigger curtain opening ONLY when page and resources finish loading completely!
       window.addEventListener('load', () => {
-        setTimeout(openCurtains, 500);
+        setTimeout(openCurtains, 450);
       });
+      setTimeout(openCurtains, 2500);
 
-      // Safety timeout fallback (8.0s) for extremely slow networks
-      setTimeout(openCurtains, 8000);
+      // Page Link Navigation Interceptor: Smoothly close curtains before moving to new page!
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank') {
+          return;
+        }
+
+        e.preventDefault();
+        loader.classList.remove('curtain-done');
+        loader.classList.remove('curtain-opening');
+        if (progressBar) progressBar.style.width = '0%';
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 450);
+      });
     })();
 
     /* ============================================================

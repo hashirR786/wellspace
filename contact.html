@@ -190,9 +190,39 @@
       .nav-links { display: none; }
       .mobile-nav-toggle { display: flex; }
     }
+    /* Curtain-Style Loading Screen */
+    .curtain-loader-wrapper { position: fixed; inset: 0; z-index: 99999; pointer-events: auto; overflow: hidden; }
+    .curtain-loader-wrapper.curtain-done { pointer-events: none; visibility: hidden; transition: visibility 0.1s linear 1.2s; }
+    .curtain-panel { position: absolute; top: 0; bottom: 0; width: 50vw; height: 100vh; background: var(--color-offwhite); z-index: 1; transition: transform 1.0s cubic-bezier(0.77, 0, 0.175, 1); will-change: transform; }
+    .curtain-panel-left { left: 0; transform: translateX(0); box-shadow: 12px 0 35px rgba(14, 42, 71, 0.08); }
+    .curtain-panel-right { right: 0; transform: translateX(0); box-shadow: -12px 0 35px rgba(14, 42, 71, 0.08); }
+    .curtain-loader-wrapper.curtain-opening .curtain-panel-left { transform: translateX(-100%); }
+    .curtain-loader-wrapper.curtain-opening .curtain-panel-right { transform: translateX(100%); }
+    .curtain-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; width: min(90%, 360px); transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+    .curtain-loader-wrapper.curtain-opening .curtain-content { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
+    .curtain-logo { height: clamp(55px, 9vw, 85px); width: auto; object-fit: contain; filter: drop-shadow(0 4px 22px rgba(2, 132, 199, 0.45)); animation: curtainLogoPulse 2.2s ease-in-out infinite; }
+    @keyframes curtainLogoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    .curtain-tagline { font-family: var(--font-body); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.18em; color: #0E2A47; text-transform: uppercase; }
+    .curtain-progress-track { width: 100%; height: 3px; background: rgba(14, 42, 71, 0.12); border-radius: 4px; overflow: hidden; margin-top: 0.25rem; }
+    .curtain-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #0284C7, #38BDF8); border-radius: 4px; box-shadow: 0 0 10px #38BDF8; transition: width 0.15s ease-out; }
   </style>
 </head>
 <body>
+
+  <!-- Curtain Loading Screen -->
+  <div id="site-preloader" class="curtain-loader-wrapper" aria-hidden="false">
+    <div class="curtain-panel curtain-panel-left" id="curtain-left"></div>
+    <div class="curtain-panel curtain-panel-right" id="curtain-right"></div>
+    <div class="curtain-content" id="curtain-content">
+      <div class="curtain-logo-container">
+        <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd" class="curtain-logo" />
+      </div>
+      <span class="curtain-tagline">ECO-FRIENDLY CLEANING SPECIALISTS</span>
+      <div class="curtain-progress-track">
+        <div class="curtain-progress-bar" id="curtain-bar"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Header -->
   <header class="site-header">
@@ -487,6 +517,59 @@ ${name}`;
       const mailtoUrl = `mailto:info@wellspacecleaning.ca?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailtoUrl;
     }
+    (function initCurtainLoader() {
+      const loader = document.getElementById('site-preloader');
+      const progressBar = document.getElementById('curtain-bar');
+      if (!loader) return;
+
+      let hasFinished = false;
+      let currentProgress = 0;
+
+      const progressInterval = setInterval(() => {
+        if (currentProgress < 90) {
+          currentProgress += Math.floor(Math.random() * 8) + 4;
+          if (currentProgress > 90) currentProgress = 90;
+          if (progressBar) progressBar.style.width = currentProgress + '%';
+        }
+      }, 70);
+
+      function openCurtains() {
+        if (hasFinished) return;
+        hasFinished = true;
+        clearInterval(progressInterval);
+        if (progressBar) progressBar.style.width = '100%';
+
+        setTimeout(() => {
+          loader.classList.add('curtain-opening');
+          setTimeout(() => {
+            loader.classList.add('curtain-done');
+          }, 1100);
+        }, 300);
+      }
+
+      window.addEventListener('load', () => {
+        setTimeout(openCurtains, 450);
+      });
+      setTimeout(openCurtains, 2500);
+
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank') {
+          return;
+        }
+
+        e.preventDefault();
+        loader.classList.remove('curtain-done');
+        loader.classList.remove('curtain-opening');
+        if (progressBar) progressBar.style.width = '0%';
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 450);
+      });
+    })();
   </script>
 </body>
 </html>
