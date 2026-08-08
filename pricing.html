@@ -194,7 +194,8 @@
     .curtain-panel-right { right: 0; transform: translateX(0); box-shadow: -12px 0 35px rgba(14, 42, 71, 0.08); }
     .curtain-loader-wrapper.curtain-opening .curtain-panel-left { transform: translateX(-100%); }
     .curtain-loader-wrapper.curtain-opening .curtain-panel-right { transform: translateX(100%); }
-    .curtain-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; width: min(90%, 360px); transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+    .curtain-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -54%) scale(0.95); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; width: min(90%, 360px); opacity: 0; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .curtain-loader-wrapper.curtain-show-content .curtain-content { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     .curtain-loader-wrapper.curtain-opening .curtain-content { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
     .curtain-logo { height: clamp(55px, 9vw, 85px); width: auto; object-fit: contain; filter: drop-shadow(0 4px 22px rgba(2, 132, 199, 0.45)); animation: curtainLogoPulse 2.2s ease-in-out infinite; }
     @keyframes curtainLogoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
@@ -438,13 +439,17 @@
       let hasFinished = false;
       let currentProgress = 0;
 
+      setTimeout(() => {
+        if (!hasFinished) loader.classList.add('curtain-show-content');
+      }, 150);
+
       const progressInterval = setInterval(() => {
         if (currentProgress < 90) {
-          currentProgress += Math.floor(Math.random() * 8) + 4;
+          currentProgress += Math.floor(Math.random() * 10) + 5;
           if (currentProgress > 90) currentProgress = 90;
           if (progressBar) progressBar.style.width = currentProgress + '%';
         }
-      }, 70);
+      }, 60);
 
       function openCurtains() {
         if (hasFinished) return;
@@ -453,11 +458,12 @@
         if (progressBar) progressBar.style.width = '100%';
 
         setTimeout(() => {
+          loader.classList.remove('curtain-show-content');
           loader.classList.add('curtain-opening');
           setTimeout(() => {
             loader.classList.add('curtain-done');
-          }, 1100);
-        }, 300);
+          }, 1000);
+        }, 350);
       }
 
       window.addEventListener('load', () => {
@@ -476,11 +482,16 @@
         e.preventDefault();
         loader.classList.remove('curtain-done');
         loader.classList.remove('curtain-opening');
+        loader.classList.remove('curtain-show-content');
         if (progressBar) progressBar.style.width = '0%';
 
         setTimeout(() => {
-          window.location.href = href;
-        }, 450);
+          loader.classList.add('curtain-show-content');
+          if (progressBar) progressBar.style.width = '35%';
+          setTimeout(() => {
+            window.location.href = href;
+          }, 350);
+        }, 400);
       });
     })();
   </script>
