@@ -939,10 +939,16 @@
       margin-top: 0;
     }
 
-    /* Mobile: Shrink scroll runway so users reach content faster */
-    @media (max-width: 768px) {
+    /* Mobile: 100vh Non-scrollable Hero Section */
+    @media (max-width: 1024px) {
       .hero-scrollytelling-outer {
-        height: 220vh;
+        height: 100vh !important;
+      }
+      .scrolly-ctas {
+        display: none !important;
+      }
+      .mobile-swipe-hint {
+        display: none !important;
       }
     }
 
@@ -996,6 +1002,7 @@
       margin-top: 0;
     }
 
+    /* Desktop Canvas Engine */
     #canvas-300 {
       position: absolute;
       top: 0;
@@ -1005,6 +1012,52 @@
       display: block;
       z-index: 1;
       filter: brightness(0.85) contrast(1.06);
+    }
+
+    /* Mobile 5-Photo Hero Slideshow Container */
+    .hero-slideshow-container {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+      background: #070a10;
+    }
+
+    @media (max-width: 1024px) {
+      #canvas-300 {
+        display: none !important;
+      }
+      .hero-slideshow-container {
+        display: block !important;
+      }
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1.0s ease-in-out;
+      will-change: opacity;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: brightness(0.65) contrast(1.08);
     }
 
     .scrolly-glow {
@@ -3428,7 +3481,27 @@
          ========================================================================== -->
     <section class="hero-scrollytelling-outer" id="scrolly-outer" id="home">
       <div class="scrollytelling-sticky">
+        <!-- Desktop Canvas Engine (> 768px) -->
         <canvas id="canvas-300"></canvas>
+
+        <!-- Mobile 5-Image Transition Slideshow (<= 768px) -->
+        <div class="hero-slideshow-container" id="hero-slideshow">
+          <div class="hero-slide active" data-index="0">
+            <img src="./public/for mobile/pexels-polina-tankilevitch-4440537.jpg" alt="Eco-Friendly Cleaning" />
+          </div>
+          <div class="hero-slide" data-index="1">
+            <img src="./public/for mobile/pexels-tima-miroshnichenko-6195949.jpg" alt="Meticulous Residential Cleaning" />
+          </div>
+          <div class="hero-slide" data-index="2">
+            <img src="./public/for mobile/pexels-tima-miroshnichenko-6195956.jpg" alt="Precision Detailed Cleanliness" />
+          </div>
+          <div class="hero-slide" data-index="3">
+            <img src="./public/for mobile/pexels-tima-miroshnichenko-6196566.jpg" alt="Fresh Home Living Space" />
+          </div>
+          <div class="hero-slide" data-index="4">
+            <img src="./public/for mobile/pexels-alejandro-robles-duque-420889274-32908422.jpg" alt="Spotless Room Care" />
+          </div>
+        </div>
         <div class="scrolly-glow"></div>
         <div class="scrolly-overlay-gradient"></div>
 
@@ -4180,18 +4253,89 @@
       initHeroParticles();
       initMagneticButtons();
       initAnimatedCounters();
-      init300FramesScrollytelling();
+      initScrollytellingEngine();
     });
 
     /* ============================================================
-       AWWARDS-LEVEL 300-FRAME SCROLLYTELLING ENGINE
+       DUAL HERO SCROLL ENGINE:
+       - DESKTOP (> 768px): 120 Frame High-Res Canvas Animation
+       - MOBILE (<= 768px): 5-Photo High Quality Crossfade Slideshow
        ============================================================ */
-    function init300FramesScrollytelling() {
-      const isMobile = () => window.innerWidth <= 768;
-      const isMobileView = isMobile();
-      const TOTAL_FRAMES = isMobileView ? 160 : 120;
-      const MOBILE_STEP = 1; // Load smooth full 160 portrait frames on mobile
+    function initScrollytellingEngine() {
+      const isMobile = () => window.innerWidth <= 1024;
 
+      if (isMobile()) {
+        // MOBILE ENGINE: 100vh Non-Scrollable Dynamic Auto-Slideshow (5 Photos)
+        const slides = document.querySelectorAll('.hero-slide');
+        const outer = document.getElementById('scrolly-outer');
+        if (!slides.length) return;
+
+        const beats = [
+          document.getElementById('beat-1'),
+          document.getElementById('beat-2'),
+          document.getElementById('beat-3'),
+          document.getElementById('beat-4'),
+          document.getElementById('beat-5')
+        ];
+
+        let currentIndex = 0;
+
+        function setActiveSlide(index) {
+          slides.forEach((slide, i) => {
+            if (i === index) {
+              slide.classList.add('active');
+            } else {
+              slide.classList.remove('active');
+            }
+          });
+          beats.forEach((b, i) => {
+            if (b) {
+              if (i === index) {
+                b.classList.add('active');
+              } else {
+                b.classList.remove('active');
+              }
+            }
+          });
+        }
+
+        // Initialize first slide immediately
+        setActiveSlide(0);
+
+        // Automatic classic soft opacity crossfade loop every 3.8 seconds
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % 5;
+          setActiveSlide(currentIndex);
+        }, 3800);
+
+        // Header & Logo Overlay Transition when scrolling past 100vh hero
+        function onScrollMobileHeader() {
+          if (!outer) return;
+          const rect = outer.getBoundingClientRect();
+          const heroOverlay = document.getElementById('hero-brand-overlay');
+          const siteHeader = document.getElementById('site-header');
+          const isPastHero = rect.bottom <= window.innerHeight - 50;
+
+          if (isPastHero) {
+            if (heroOverlay) heroOverlay.classList.add('hidden');
+            if (siteHeader) siteHeader.classList.add('visible');
+          } else {
+            if (heroOverlay) heroOverlay.classList.remove('hidden');
+            if (siteHeader) siteHeader.classList.remove('visible');
+          }
+        }
+
+        window.addEventListener('scroll', onScrollMobileHeader, { passive: true });
+        onScrollMobileHeader();
+
+        if (window.updateCurtainProgress) {
+          window.updateCurtainProgress(5, 5);
+        }
+        return;
+      }
+
+      // DESKTOP ENGINE: 120 Frame Canvas Animation
+      const TOTAL_FRAMES = 120;
       const canvas = document.getElementById('canvas-300');
       const outer = document.getElementById('scrolly-outer');
       if (!canvas || !outer) return;
@@ -4199,9 +4343,6 @@
       const ctx = canvas.getContext('2d');
       const images = [];
       let loadedCount = 0;
-
-      const frameInd = document.getElementById('scrolly-frame-indicator');
-      const progressFill = document.getElementById('scrolly-progress-fill');
 
       const beats = [
         { el: document.getElementById('beat-1'), min: 0.00, max: 0.18 },
@@ -4213,24 +4354,12 @@
 
       function getFramePath(index) {
         const numStr = String(index).padStart(3, '0');
-        if (isMobileView) {
-          return `./public/frames%20for%20mobile%20responsive/ezgif-frame-${numStr}.png`;
-        }
         return `./public/frames160/frame_${numStr}.png`;
       }
 
-      // Build the frame index list: mobile starts from frame 002 (skipping blurry frame 001)
-      const frameIndices = [];
-      const startFrame = isMobileView ? 2 : 1;
-      const step = isMobile() ? MOBILE_STEP : 1;
-      for (let i = startFrame; i <= TOTAL_FRAMES; i += step) {
-        frameIndices.push(i);
-      }
-
-      for (let j = 0; j < frameIndices.length; j++) {
+      for (let j = 1; j <= TOTAL_FRAMES; j++) {
         const img = new Image();
-        // Lazy-load: only set src for first 20 frames immediately; rest load via IntersectionObserver pattern
-        img.src = getFramePath(frameIndices[j]);
+        img.src = getFramePath(j);
         img.onload = () => {
           loadedCount++;
           if (loadedCount === 1) {
@@ -4238,13 +4367,12 @@
             renderFrame(0);
           }
           if (window.updateCurtainProgress) {
-            window.updateCurtainProgress(loadedCount, frameIndices.length);
+            window.updateCurtainProgress(loadedCount, TOTAL_FRAMES);
           }
         };
         images.push(img);
       }
 
-      const EFFECTIVE_FRAMES = frameIndices.length;
       let currentFrameIndex = 0;
 
       function renderFrame(index) {
@@ -4271,8 +4399,7 @@
 
       function resizeCanvas() {
         const sticky = document.querySelector('.scrollytelling-sticky');
-        // Cap DPR: 1 on mobile to save memory, max 2 on desktop
-        const dpr = isMobile() ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const displayWidth = sticky ? sticky.offsetWidth : window.innerWidth;
         const displayHeight = sticky ? sticky.offsetHeight : window.innerHeight;
 
@@ -4288,7 +4415,7 @@
 
       let rafId = null;
 
-      function onScroll() {
+      function onScrollDesktop() {
         const rect = outer.getBoundingClientRect();
         const totalScrollable = outer.offsetHeight - window.innerHeight;
         const scrolled = -rect.top;
@@ -4297,19 +4424,9 @@
         if (!rafId) {
           rafId = requestAnimationFrame(() => {
             rafId = null;
-            const frameIdx = Math.max(0, Math.min(EFFECTIVE_FRAMES - 1, Math.round(progress * (EFFECTIVE_FRAMES - 1))));
+            const frameIdx = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(progress * (TOTAL_FRAMES - 1))));
             renderFrame(frameIdx);
 
-            if (frameInd) {
-              const numStr = String(frameIdx + 1).padStart(3, '0');
-              frameInd.textContent = `FRAME ${numStr} / ${EFFECTIVE_FRAMES}`;
-            }
-
-            if (progressFill) {
-              progressFill.style.width = (progress * 100) + '%';
-            }
-
-            // Toggle Narrative Story Beats
             beats.forEach(b => {
               if (b.el) {
                 if (progress >= b.min && progress < b.max) {
@@ -4320,20 +4437,8 @@
               }
             });
 
-            // Hide the "Swipe to Explore" hint once user starts scrolling
-            const swipeHint = document.getElementById('mobile-swipe-hint');
-            if (swipeHint && progress > 0.04) {
-              swipeHint.style.opacity = '0';
-              swipeHint.style.pointerEvents = 'none';
-            } else if (swipeHint && progress <= 0.01) {
-              swipeHint.style.opacity = '';
-              swipeHint.style.pointerEvents = '';
-            }
-
-            // Header & Hero Logo Overlay Transition (Reveals navbar ONLY after user reaches downstream content)
             const heroOverlay = document.getElementById('hero-brand-overlay');
             const siteHeader = document.getElementById('site-header');
-
             const isPastHero = rect.bottom <= window.innerHeight + 10;
 
             if (isPastHero) {
@@ -4347,7 +4452,8 @@
         }
       }
 
-      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('scroll', onScrollDesktop, { passive: true });
+      onScrollDesktop();
     }
 
     /* 3D Interactive Before / After Reveal Slider */
