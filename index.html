@@ -1142,6 +1142,19 @@
       animation: heroTextFloat 4.2s ease-in-out infinite;
     }
 
+    /* High-Performance Mobile Optimization: Strip heavy GPU text-shadow blurs & keyframe loops */
+    @media (max-width: 1024px) {
+      .scrolly-title {
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9) !important;
+      }
+      .scrolly-beat.active .scrolly-title {
+        animation: none !important;
+      }
+      .scrolly-glow {
+        display: none !important;
+      }
+    }
+
     .scrolly-desc {
       font-size: clamp(0.98rem, 1.8vw, 1.18rem);
       line-height: 1.65;
