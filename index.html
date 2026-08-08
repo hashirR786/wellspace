@@ -3313,12 +3313,18 @@
         padding: 0.4rem 0;
       }
 
-      .nav-wrapper {
-        justify-content: flex-end;
+      .nav-links {
+        display: none !important;
       }
 
       .mobile-nav-toggle {
-        display: flex;
+        display: flex !important;
+      }
+
+      @media (max-width: 600px) {
+        .nav-cta-btn {
+          display: none !important;
+        }
       }
 
       .form-row {
