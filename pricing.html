@@ -191,13 +191,13 @@
     }
     /* Curtain-Style Loading Screen */
     .curtain-loader-wrapper { position: fixed; inset: 0; z-index: 99999; pointer-events: auto; overflow: hidden; }
-    .curtain-loader-wrapper.curtain-done { pointer-events: none; visibility: hidden; transition: visibility 0.1s linear 1.2s; }
-    .curtain-panel { position: absolute; top: 0; bottom: 0; width: 50vw; height: 100vh; background: var(--color-offwhite); z-index: 1; transition: transform 1.0s cubic-bezier(0.77, 0, 0.175, 1); will-change: transform; }
+    .curtain-loader-wrapper.curtain-done { pointer-events: none; visibility: hidden; transition: visibility 0.1s linear 0.8s; }
+    .curtain-panel { position: absolute; top: 0; bottom: 0; width: 50.5vw; height: 100vh; background: var(--color-offwhite); z-index: 1; transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .curtain-panel-left { left: 0; transform: translateX(0); box-shadow: 12px 0 35px rgba(14, 42, 71, 0.08); }
     .curtain-panel-right { right: 0; transform: translateX(0); box-shadow: -12px 0 35px rgba(14, 42, 71, 0.08); }
     .curtain-loader-wrapper.curtain-opening .curtain-panel-left { transform: translateX(-100%); }
     .curtain-loader-wrapper.curtain-opening .curtain-panel-right { transform: translateX(100%); }
-    .curtain-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -54%) scale(0.95); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; width: min(90%, 360px); opacity: 0; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .curtain-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -54%) scale(0.95); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; width: min(90%, 360px); opacity: 0; transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
     .curtain-loader-wrapper.curtain-show-content .curtain-content { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     .curtain-loader-wrapper.curtain-opening .curtain-content { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
     .curtain-logo { height: clamp(55px, 9vw, 85px); width: auto; object-fit: contain; filter: drop-shadow(0 4px 22px rgba(2, 132, 199, 0.45)); animation: curtainLogoPulse 2.2s ease-in-out infinite; }
@@ -217,7 +217,7 @@
       <div class="curtain-logo-container">
         <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd" class="curtain-logo" />
       </div>
-      <span class="curtain-tagline">ECO-FRIENDLY CLEANING SPECIALISTS</span>
+      <span class="curtain-tagline">CLEAN BEYOND EXPECTATIONS</span>
       <div class="curtain-progress-track">
         <div class="curtain-progress-bar" id="curtain-bar"></div>
       </div>
@@ -442,17 +442,30 @@
       let hasFinished = false;
       let currentProgress = 0;
 
+      function forceDismissLoader() {
+        hasFinished = true;
+        clearInterval(progressInterval);
+        loader.classList.add('curtain-done');
+        loader.classList.remove('curtain-show-content', 'curtain-opening');
+      }
+
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+          forceDismissLoader();
+        }
+      });
+
       setTimeout(() => {
         if (!hasFinished) loader.classList.add('curtain-show-content');
-      }, 150);
+      }, 120);
 
       const progressInterval = setInterval(() => {
         if (currentProgress < 90) {
-          currentProgress += Math.floor(Math.random() * 10) + 5;
+          currentProgress += Math.floor(Math.random() * 10) + 6;
           if (currentProgress > 90) currentProgress = 90;
           if (progressBar) progressBar.style.width = currentProgress + '%';
         }
-      }, 60);
+      }, 50);
 
       function openCurtains() {
         if (hasFinished) return;
@@ -465,14 +478,14 @@
           loader.classList.add('curtain-opening');
           setTimeout(() => {
             loader.classList.add('curtain-done');
-          }, 1000);
-        }, 350);
+          }, 750);
+        }, 180);
       }
 
       window.addEventListener('load', () => {
-        setTimeout(openCurtains, 450);
+        setTimeout(openCurtains, 300);
       });
-      setTimeout(openCurtains, 2500);
+      setTimeout(openCurtains, 2200);
 
       document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
@@ -490,11 +503,11 @@
 
         setTimeout(() => {
           loader.classList.add('curtain-show-content');
-          if (progressBar) progressBar.style.width = '35%';
+          if (progressBar) progressBar.style.width = '40%';
           setTimeout(() => {
             window.location.href = href;
-          }, 350);
-        }, 400);
+          }, 300);
+        }, 300);
       });
     })();
   </script>

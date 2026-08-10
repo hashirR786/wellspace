@@ -2821,7 +2821,7 @@
     .curtain-loader-wrapper.curtain-done {
       pointer-events: none;
       visibility: hidden;
-      transition: visibility 0.1s linear 1.2s;
+      transition: visibility 0.1s linear 0.8s;
     }
 
     /* Left and Right Split Curtain Panels */
@@ -2829,12 +2829,15 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 50vw;
+      width: 50.5vw;
       height: 100vh;
       background: var(--color-offwhite); /* Crisp seamless site background */
       z-index: 1;
-      transition: transform 1.0s cubic-bezier(0.77, 0, 0.175, 1);
+      transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform;
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
 
     .curtain-panel-left {
@@ -2872,7 +2875,7 @@
       gap: 1.1rem;
       width: min(90%, 360px);
       opacity: 0; /* Hidden initially while curtains slide closed */
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Content appears AFTER curtains close */
@@ -3433,7 +3436,7 @@
       <div class="curtain-logo-container">
         <img src="./public/well_space_-_logo_and_brand_name-removebg.png" alt="WellSpace Cleaning Ltd" class="curtain-logo" />
       </div>
-      <span class="curtain-tagline">ECO-FRIENDLY CLEANING SPECIALISTS</span>
+      <span class="curtain-tagline">CLEAN BEYOND EXPECTATIONS</span>
 
       <!-- Subtle Progress Bar Indicator -->
       <div class="curtain-progress-track">
@@ -4986,19 +4989,33 @@ ${name}`;
       let hasFinished = false;
       let currentProgress = 0;
 
+      // Force-reset preloader if page is restored from Back/Forward cache (bfcache / swipe back)
+      function forceDismissLoader() {
+        hasFinished = true;
+        clearInterval(progressInterval);
+        loader.classList.add('curtain-done');
+        loader.classList.remove('curtain-show-content', 'curtain-opening');
+      }
+
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+          forceDismissLoader();
+        }
+      });
+
       // Step 1: Reveal logo & progress bar AFTER curtains are closed
       setTimeout(() => {
         if (!hasFinished) loader.classList.add('curtain-show-content');
-      }, 150);
+      }, 120);
 
       // Baseline progress simulation
       const progressInterval = setInterval(() => {
         if (currentProgress < 90) {
-          currentProgress += Math.floor(Math.random() * 10) + 5;
+          currentProgress += Math.floor(Math.random() * 10) + 6;
           if (currentProgress > 90) currentProgress = 90;
           if (progressBar) progressBar.style.width = currentProgress + '%';
         }
-      }, 60);
+      }, 50);
 
       function openCurtains() {
         if (hasFinished) return;
@@ -5006,24 +5023,24 @@ ${name}`;
         clearInterval(progressInterval);
         if (progressBar) progressBar.style.width = '100%';
 
-        // Step 1: Fade out centered logo & tagline FIRST
+        // Step 1: Fade out logo & tagline smoothly (180ms)
         setTimeout(() => {
           loader.classList.remove('curtain-show-content');
           loader.classList.add('curtain-opening');
 
-          // Step 2: Once panels slide off-screen to left & right, set pointer-events: none
+          // Step 2: Once panels slide off-screen (750ms), set pointer-events: none
           setTimeout(() => {
             loader.classList.add('curtain-done');
-          }, 1000);
-        }, 350);
+          }, 750);
+        }, 180);
       }
 
       window.addEventListener('load', () => {
-        setTimeout(openCurtains, 450);
+        setTimeout(openCurtains, 300);
       });
-      setTimeout(openCurtains, 2500);
+      setTimeout(openCurtains, 2200);
 
-      // Page Link Navigation Interceptor: FIRST close curtains -> THEN show logo & progress bar -> THEN navigate!
+      // Page Link Navigation Interceptor: FIRST close curtains -> THEN navigate!
       document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
         if (!link) return;
@@ -5033,22 +5050,21 @@ ${name}`;
         }
 
         e.preventDefault();
-        // 1. Close curtains from both sides first (hide content)
+        // 1. Reset & close curtains
         loader.classList.remove('curtain-done');
         loader.classList.remove('curtain-opening');
         loader.classList.remove('curtain-show-content');
         if (progressBar) progressBar.style.width = '0%';
 
-        // 2. AFTER curtains slide closed (~400ms), reveal logo & progress bar
+        // 2. AFTER curtains slide closed (~300ms), reveal logo & progress bar then navigate
         setTimeout(() => {
           loader.classList.add('curtain-show-content');
-          if (progressBar) progressBar.style.width = '35%';
+          if (progressBar) progressBar.style.width = '40%';
 
-          // 3. Navigate to target page
           setTimeout(() => {
             window.location.href = href;
-          }, 350);
-        }, 400);
+          }, 300);
+        }, 300);
       });
     })();
 
