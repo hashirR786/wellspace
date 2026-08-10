@@ -4347,15 +4347,27 @@
         return;
       }
 
-      // DESKTOP ENGINE: 120 Frame Canvas Animation
-      const TOTAL_FRAMES = 120;
+      // DESKTOP ENGINE: 300-Frame WebP — Smooth Lerp Render Loop
+      const TOTAL_FRAMES = 300;
+      const EAGER_FRAMES = 30;
+      const LERP_SPEED = 0.14; // 0.0 = no movement, 1.0 = instant snap — 0.14 feels cinematic
+
       const canvas = document.getElementById('canvas-300');
       const outer = document.getElementById('scrolly-outer');
       if (!canvas || !outer) return;
 
+      // Use DPR 1 on desktop — halves pixel work, imperceptible on 1080p displays
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const ctx = canvas.getContext('2d');
-      const images = [];
+
+      // Store pre-decoded ImageBitmaps for instant draws (no per-frame decode stall)
+      const bitmaps = new Array(TOTAL_FRAMES).fill(null);
       let loadedCount = 0;
+      let firstFrameReady = false;
+
+      // Two separate frame pointers: target (from scroll) and current (lerped display)
+      let targetFrame = 0;   // Where scroll says we should be
+      let currentFrame = 0;  // What's actually displayed (smoothly chases targetFrame)
 
       const beats = [
         { el: document.getElementById('beat-1'), min: 0.00, max: 0.18 },
@@ -4365,112 +4377,134 @@
         { el: document.getElementById('beat-5'), min: 0.85, max: 1.01 }
       ];
 
-      function getFramePath(index) {
-        const numStr = String(index).padStart(3, '0');
-        return `./public/frames160/frame_${numStr}.png`;
+      function getFramePath(n) {
+        return `./public/frames300-webp/ezgif-frame-${String(n).padStart(3, '0')}.webp`;
       }
 
-      for (let j = 1; j <= TOTAL_FRAMES; j++) {
+      function loadFrame(frameNumber) {
+        const idx = frameNumber - 1;
+        if (bitmaps[idx] !== null) return; // already loaded or in flight
+        bitmaps[idx] = false; // mark in-flight
         const img = new Image();
-        img.src = getFramePath(j);
+        img.decoding = 'async';
         img.onload = () => {
-          loadedCount++;
-          if (loadedCount === 1) {
-            resizeCanvas();
-            renderFrame(0);
-          }
-          if (window.updateCurtainProgress) {
-            window.updateCurtainProgress(loadedCount, TOTAL_FRAMES);
+          // Pre-decode to ImageBitmap: GPU-ready, no per-draw stall
+          if (window.createImageBitmap) {
+            createImageBitmap(img).then(bmp => {
+              bitmaps[idx] = bmp;
+              loadedCount++;
+              if (!firstFrameReady && frameNumber === 1) {
+                firstFrameReady = true;
+                resizeCanvas();
+                startRenderLoop();
+              }
+              if (window.updateCurtainProgress) {
+                window.updateCurtainProgress(Math.min(loadedCount, EAGER_FRAMES), EAGER_FRAMES);
+              }
+            });
+          } else {
+            bitmaps[idx] = img;
+            loadedCount++;
+            if (!firstFrameReady && frameNumber === 1) {
+              firstFrameReady = true;
+              resizeCanvas();
+              startRenderLoop();
+            }
+            if (window.updateCurtainProgress) {
+              window.updateCurtainProgress(Math.min(loadedCount, EAGER_FRAMES), EAGER_FRAMES);
+            }
           }
         };
-        images.push(img);
+        img.src = getFramePath(frameNumber);
       }
 
-      let currentFrameIndex = 0;
+      // Phase 1: Eager-load first 30 frames
+      for (let j = 1; j <= EAGER_FRAMES; j++) loadFrame(j);
 
-      function renderFrame(index) {
-        const img = images[index];
-        if (!img || !img.complete || img.naturalWidth === 0) return;
-
-        const cw = canvas.width;
-        const ch = canvas.height;
-        const iw = img.naturalWidth;
-        const ih = img.naturalHeight;
-
-        const scale = Math.max(cw / iw, ch / ih);
-        const sw = iw * scale;
-        const sh = ih * scale;
-        const sx = (cw - sw) / 2;
-        const sy = (ch - sh) / 2;
-
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, sx, sy, sw, sh);
-        currentFrameIndex = index;
-      }
+      // Phase 2: Background-load remaining frames after 600ms
+      setTimeout(() => {
+        for (let j = EAGER_FRAMES + 1; j <= TOTAL_FRAMES; j++) loadFrame(j);
+      }, 600);
 
       function resizeCanvas() {
         const sticky = document.querySelector('.scrollytelling-sticky');
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const displayWidth = sticky ? sticky.offsetWidth : window.innerWidth;
         const displayHeight = sticky ? sticky.offsetHeight : window.innerHeight;
-
         canvas.width = displayWidth * dpr;
         canvas.height = displayHeight * dpr;
         canvas.style.width = displayWidth + 'px';
         canvas.style.height = displayHeight + 'px';
+      }
+      window.addEventListener('resize', () => { resizeCanvas(); }, { passive: true });
 
-        renderFrame(currentFrameIndex);
+      function drawFrame(idx) {
+        const bmp = bitmaps[idx];
+        if (!bmp) return; // not loaded yet — keep showing previous frame
+        const cw = canvas.width, ch = canvas.height;
+        const iw = bmp.width || bmp.naturalWidth;
+        const ih = bmp.height || bmp.naturalHeight;
+        const scale = Math.max(cw / iw, ch / ih);
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(bmp, (cw - iw * scale) / 2, (ch - ih * scale) / 2, iw * scale, ih * scale);
       }
 
-      window.addEventListener('resize', resizeCanvas, { passive: true });
+      // Continuous smooth render loop — lerps currentFrame toward targetFrame every tick
+      let renderLoopRunning = false;
+      function startRenderLoop() {
+        if (renderLoopRunning) return;
+        renderLoopRunning = true;
+        let lastDrawnFrame = -1;
 
-      let rafId = null;
+        function tick() {
+          requestAnimationFrame(tick);
 
+          // Smooth lerp: currentFrame chases targetFrame at LERP_SPEED per frame
+          currentFrame += (targetFrame - currentFrame) * LERP_SPEED;
+
+          const frameIdx = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(currentFrame)));
+
+          // Only redraw if the rounded frame has changed — avoids unnecessary canvas writes
+          if (frameIdx !== lastDrawnFrame) {
+            drawFrame(frameIdx);
+            lastDrawnFrame = frameIdx;
+          }
+        }
+        tick();
+      }
+
+      // Scroll handler: only updates targetFrame — no drawing here
+      let scrollProgress = 0;
       function onScrollDesktop() {
         const rect = outer.getBoundingClientRect();
         const totalScrollable = outer.offsetHeight - window.innerHeight;
-        const scrolled = -rect.top;
-        const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+        scrollProgress = Math.max(0, Math.min(1, -rect.top / totalScrollable));
 
-        if (!rafId) {
-          rafId = requestAnimationFrame(() => {
-            rafId = null;
-            const frameIdx = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(progress * (TOTAL_FRAMES - 1))));
-            renderFrame(frameIdx);
+        // Update target frame from scroll position
+        targetFrame = scrollProgress * (TOTAL_FRAMES - 1);
 
-            beats.forEach(b => {
-              if (b.el) {
-                if (progress >= b.min && progress < b.max) {
-                  b.el.classList.add('active');
-                } else {
-                  b.el.classList.remove('active');
-                }
-              }
-            });
+        // Beat text transitions
+        beats.forEach(b => {
+          if (b.el) {
+            b.el.classList.toggle('active', scrollProgress >= b.min && scrollProgress < b.max);
+          }
+        });
 
-            const heroOverlay = document.getElementById('hero-brand-overlay');
-            const siteHeader = document.getElementById('site-header');
-            const isPastHero = rect.bottom <= window.innerHeight + 10;
-
-            if (isPastHero) {
-              if (heroOverlay) heroOverlay.classList.add('hidden');
-              if (siteHeader) siteHeader.classList.add('visible');
-            } else {
-              if (heroOverlay) heroOverlay.classList.remove('hidden');
-              if (siteHeader) siteHeader.classList.remove('visible');
-            }
-          });
-        }
+        // Header / logo overlay transition
+        const heroOverlay = document.getElementById('hero-brand-overlay');
+        const siteHeader = document.getElementById('site-header');
+        const isPastHero = rect.bottom <= window.innerHeight + 10;
+        if (heroOverlay) heroOverlay.classList.toggle('hidden', isPastHero);
+        if (siteHeader) siteHeader.classList.toggle('visible', isPastHero);
       }
 
       window.addEventListener('scroll', onScrollDesktop, { passive: true });
       onScrollDesktop();
     }
 
+
     /* 3D Interactive Before / After Reveal Slider */
     function initBeforeAfterSlider() {
+
 
       const slider = document.getElementById('ba-slider');
       const crop = document.getElementById('ba-crop');

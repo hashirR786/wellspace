@@ -8,5 +8,8 @@
     "start": "npx -y http-server . -p 8080 -o"
   },
   "author": "WellSpace Cleaning Ltd",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "sharp": "^0.35.3"
+  }
 }
