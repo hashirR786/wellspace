@@ -4252,7 +4252,7 @@
                   <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
                 <a href="https://www.instagram.com/wellspace.co/" target="_blank" rel="noopener" class="footer-social-link ig" aria-label="WellSpace on Instagram">
-                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
                 </a>
               </div>
             </li>
@@ -5094,58 +5094,95 @@
       if (!loader) return;
 
       let hasFinished = false;
-      let currentProgress = 0;
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      const EAGER_FRAMES = 30;
+      const OPEN_THRESHOLD = 28; // open curtains once this many eager frames are decoded
 
-      // Force-reset preloader if page is restored from Back/Forward cache (bfcache / swipe back)
+      // Force-dismiss when page restored from bfcache (swipe-back / back-forward cache)
       function forceDismissLoader() {
         hasFinished = true;
-        clearInterval(progressInterval);
+        if (progressBar) progressBar.style.width = '100%';
         loader.classList.add('curtain-done');
         loader.classList.remove('curtain-show-content', 'curtain-opening');
       }
 
       window.addEventListener('pageshow', (e) => {
-        if (e.persisted) {
-          forceDismissLoader();
-        }
+        if (e.persisted) forceDismissLoader();
       });
 
-      // Step 1: Reveal logo & progress bar AFTER curtains are closed
+      // Reveal logo & progress bar shortly after curtains are closed on page load
       setTimeout(() => {
         if (!hasFinished) loader.classList.add('curtain-show-content');
       }, 120);
 
-      // Baseline progress simulation
-      const progressInterval = setInterval(() => {
-        if (currentProgress < 90) {
-          currentProgress += Math.floor(Math.random() * 10) + 6;
-          if (currentProgress > 90) currentProgress = 90;
-          if (progressBar) progressBar.style.width = currentProgress + '%';
-        }
-      }, 50);
-
+      // Animate curtains open, then make the overlay completely inert
       function openCurtains() {
         if (hasFinished) return;
         hasFinished = true;
-        clearInterval(progressInterval);
         if (progressBar) progressBar.style.width = '100%';
 
-        // Step 1: Fade out logo & tagline smoothly (180ms)
         setTimeout(() => {
           loader.classList.remove('curtain-show-content');
           loader.classList.add('curtain-opening');
-
-          // Step 2: Once panels slide off-screen (750ms), set pointer-events: none
           setTimeout(() => {
             loader.classList.add('curtain-done');
           }, 750);
         }, 180);
       }
 
-      window.addEventListener('load', () => {
-        setTimeout(openCurtains, 300);
-      });
-      setTimeout(openCurtains, 2200);
+      // ── DESKTOP: real-progress mode ──────────────────────────────
+      if (!isMobile) {
+        let reportedFrames = 0;
+
+        // Expose hook for the canvas engine to call as each eager frame decodes
+        window.updateCurtainProgress = function(loaded, total) {
+          if (hasFinished) return;
+          reportedFrames = loaded;
+          const pct = Math.min(5 + Math.round((loaded / total) * 92), 97);
+          if (progressBar) progressBar.style.width = pct + '%';
+
+          if (reportedFrames >= OPEN_THRESHOLD) {
+            openCurtains();
+          }
+        };
+
+        // Safety cap: never show the loader for more than 5 seconds on desktop
+        setTimeout(() => {
+          if (!hasFinished) openCurtains();
+        }, 5000);
+
+        // Also honour window.load as a minimum signal (in case canvas skips on narrow viewport)
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            if (!hasFinished && reportedFrames === 0) {
+              // Canvas likely not running (mobile viewport or error) — just open
+              openCurtains();
+            }
+          }, 800);
+        });
+
+      // ── MOBILE / fallback: timed mode (slideshow, no canvas) ─────
+      } else {
+        // Fake-tick progress bar for visual feedback
+        let currentProgress = 0;
+        const progressInterval = setInterval(() => {
+          if (currentProgress < 90) {
+            currentProgress += Math.floor(Math.random() * 10) + 6;
+            if (currentProgress > 90) currentProgress = 90;
+            if (progressBar) progressBar.style.width = currentProgress + '%';
+          }
+        }, 50);
+
+        window.addEventListener('load', () => {
+          clearInterval(progressInterval);
+          setTimeout(openCurtains, 400);
+        });
+        // Safety cap for mobile
+        setTimeout(() => {
+          clearInterval(progressInterval);
+          if (!hasFinished) openCurtains();
+        }, 2500);
+      }
 
       // Page Link Navigation Interceptor: FIRST close curtains -> THEN navigate!
       document.addEventListener('click', (e) => {
