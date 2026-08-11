@@ -138,8 +138,8 @@
     .footer-link { color: rgba(255,255,255,0.7); text-decoration: none; display: block; margin-bottom: 0.6rem; font-size: 0.92rem; }
     .footer-link:hover { color: #0284C7; }
 
-    /* Floating WhatsApp Button with Pulse Animation */
-    .whatsapp-float {
+    /* Floating SMS/Text Button with Pulse Animation */
+    .sms-float {
       position: fixed;
       bottom: 1.5rem;
       right: 1.5rem;
@@ -149,28 +149,28 @@
       gap: 0.75rem;
       text-decoration: none;
     }
-    .whatsapp-badge {
+    .sms-badge {
       width: 60px;
       height: 60px;
-      background: var(--color-whatsapp);
+      background: #0284C7;
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
-      animation: whatsappPulse 2.5s infinite;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4);
+      animation: smsPulse 2.5s ease-in-out infinite;
       transition: transform 0.3s ease, background-color 0.3s ease;
     }
-    .whatsapp-float:hover .whatsapp-badge {
+    .sms-float:hover .sms-badge {
       transform: scale(1.1) translateY(-2px);
-      background-color: var(--color-whatsapp-hover);
+      background-color: #0369A1;
     }
-    .whatsapp-badge svg { width: 34px; height: 34px; fill: currentColor; }
-    @keyframes whatsappPulse {
-      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
-      70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    .sms-badge svg { width: 30px; height: 30px; fill: currentColor; }
+    @keyframes smsPulse {
+      0% { box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4); }
+      50% { box-shadow: 0 8px 28px rgba(2, 132, 199, 0.65), 0 0 0 10px rgba(2, 132, 199, 0.12); }
+      100% { box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4); }
     }
 
     /* Mobile Navigation Drawer & Backdrop */
@@ -388,10 +388,10 @@
     </div>
   </footer>
 
-  <!-- Floating WhatsApp -->
-  <a href="https://wa.me/17789904883" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
-    <div class="whatsapp-badge">
-      <svg viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.993L2 22l5.233-1.237a9.96 9.96 0 004.779 1.221h.005c5.505 0 9.988-4.478 9.989-9.984A9.99 9.99 0 0012.012 2zm.005 16.59h-.004a8.31 8.31 0 01-4.238-1.166l-.304-.18-3.146.743.758-3.07-.198-.314a8.3 8.3 0 01-1.272-4.417c0-4.582 3.729-8.311 8.312-8.312a8.28 8.28 0 015.877 2.434 8.28 8.28 0 012.43 5.876c0 4.583-3.728 8.312-8.31 8.312zm4.557-6.223c-.25-.125-1.478-.728-1.707-.811-.228-.083-.395-.125-.561.125-.167.25-.644.811-.79 0.978-.146.166-.292.187-.542.062a6.85 6.85 0 01-2.014-1.242 7.55 7.55 0 01-1.393-1.737c-.146-.25-.015-.386.11-.51.112-.112.25-.292.375-.438.125-.145.166-.25.25-.416.083-.166.041-.312-.021-.437-.063-.125-.562-1.354-.77-1.854-.203-.487-.41-.421-.562-.429h-.479c-.166 0-.437.062-.666.312-.229.25-.875.854-.875 2.083s.896 2.417 1.02 2.584c.125.166 1.764 2.693 4.275 3.777.597.258 1.064.412 1.427.527.6.19 1.147.163 1.579.099.481-.071 1.478-.604 1.686-1.188.208-.583.208-1.083.146-1.188-.063-.104-.229-.166-.479-.291z"></path></svg>
+  <!-- Floating SMS/Text Button -->
+  <a href="sms:+17789904883" class="sms-float" aria-label="Text WellSpace Cleaning">
+    <div class="sms-badge">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
     </div>
   </a>
 

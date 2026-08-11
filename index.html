@@ -346,7 +346,7 @@
         transform: none !important;
         transition: none !important;
       }
-      .parallax-glow, .hero-image-frame, .hero-badge, .glow-1, .glow-2, .whatsapp-float {
+      .parallax-glow, .hero-image-frame, .hero-badge, .glow-1, .glow-2, .sms-float {
         animation: none !important;
         transform: none !important;
       }
@@ -2740,9 +2740,9 @@
     }
 
     /* ==========================================================================
-       FLOATING WHATSAPP BUTTON (Mobile Touch Safe)
+       FLOATING SMS/TEXT BUTTON (Mobile Touch Safe)
        ========================================================================== */
-    .whatsapp-float {
+    .sms-float {
       position: fixed;
       bottom: 1.5rem;
       right: 1.5rem;
@@ -2753,31 +2753,31 @@
       text-decoration: none;
     }
 
-    .whatsapp-badge {
+    .sms-badge {
       width: 68px;
       height: 68px;
-      background-color: var(--color-whatsapp);
+      background-color: #0284C7;
       color: var(--color-white);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 26px rgba(37, 211, 102, 0.45);
+      box-shadow: 0 8px 26px rgba(2, 132, 199, 0.45);
       transition: all var(--transition-fast);
     }
 
-    .whatsapp-float:hover .whatsapp-badge {
+    .sms-float:hover .sms-badge {
       transform: scale(1.08);
-      background-color: var(--color-whatsapp-hover);
+      background-color: #0369A1;
     }
 
-    .whatsapp-badge svg {
-      width: 38px;
-      height: 38px;
+    .sms-badge svg {
+      width: 36px;
+      height: 36px;
       fill: currentColor;
     }
 
-    .whatsapp-tooltip {
+    .sms-tooltip {
       background: var(--color-dark-navy);
       color: var(--color-white);
       padding: 0.5rem 1rem;
@@ -2792,19 +2792,52 @@
       pointer-events: none;
     }
 
-    .whatsapp-float:hover .whatsapp-tooltip {
+    .sms-float:hover .sms-tooltip {
       opacity: 1;
       transform: translateX(0);
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
-      70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    @keyframes smsPulse {
+      0% { box-shadow: 0 8px 26px rgba(2, 132, 199, 0.45); }
+      50% { box-shadow: 0 8px 30px rgba(2, 132, 199, 0.7), 0 0 0 12px rgba(2, 132, 199, 0.12); }
+      100% { box-shadow: 0 8px 26px rgba(2, 132, 199, 0.45); }
     }
 
-    .whatsapp-badge {
-      animation: pulse 2.5s infinite;
+    .sms-badge {
+      animation: smsPulse 2.5s ease-in-out infinite;
+    }
+
+    /* Social Icons in Footer */
+    .footer-social-icons {
+      display: flex;
+      gap: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .footer-social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.75);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .footer-social-link:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .footer-social-link svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
 
     /* ==========================================================================
@@ -3571,9 +3604,9 @@
                 <span>Request a Quote</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
               </a>
-              <a href="#" id="hero-whatsapp-link-scrolly" target="_blank" rel="noopener" class="btn-hero-whatsapp">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.993L2 22l5.233-1.237a9.96 9.96 0 004.779 1.221h.005c5.505 0 9.988-4.478 9.989-9.984A9.99 9.99 0 0012.012 2zm.005 16.59h-.004a8.31 8.31 0 01-4.238-1.166l-.304-.18-3.146.743.758-3.07-.198-.314a8.3 8.3 0 01-1.272-4.417c0-4.582 3.729-8.311 8.312-8.312a8.28 8.28 0 015.877 2.434 8.28 8.28 0 012.43 5.876c0 4.583-3.728 8.312-8.31 8.312zm4.557-6.223c-.25-.125-1.478-.728-1.707-.811-.228-.083-.395-.125-.561.125-.167.25-.644.811-.79 0.978-.146.166-.292.187-.542.062a6.85 6.85 0 01-2.014-1.242 7.55 7.55 0 01-1.393-1.737c-.146-.25-.015-.386.11-.51.112-.112.25-.292.375-.438.125-.145.166-.25.25-.416.083-.166.041-.312-.021-.437-.063-.125-.562-1.354-.77-1.854-.203-.487-.41-.421-.562-.429h-.479c-.166 0-.437.062-.666.312-.229.25-.875.854-.875 2.083s.896 2.417 1.02 2.584c.125.166 1.764 2.693 4.275 3.777.597.258 1.064.412 1.427.527.6.19 1.147.163 1.579.099.481-.071 1.478-.604 1.686-1.188.208-.583.208-1.083.146-1.188-.063-.104-.229-.166-.479-.291z"></path></svg>
-                <span>Message on WhatsApp</span>
+              <a href="sms:+17789904883" class="btn-hero-whatsapp" id="hero-sms-link">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+                <span>Send us a Text</span>
               </a>
             </div>
           </div>
@@ -4022,8 +4055,8 @@
                   <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 </div>
                 <div>
-                  <div class="contact-label">Call or WhatsApp Us</div>
-                  <a href="https://wa.me/17789904883" id="contact-whatsapp-link" target="_blank" rel="noopener" class="contact-value">+1 (778) 990-4883</a>
+                  <div class="contact-label">Call or Text Us</div>
+                  <a href="tel:+17789904883" id="contact-phone-link" class="contact-value">+1 (778) 990-4883</a>
                 </div>
               </div>
             </address>
@@ -4097,9 +4130,9 @@
               </div>
 
               <button type="submit" class="btn btn-primary form-submit-btn">
-                Submit & Send Quote Email
+                Submit & Send Quote
               </button>
-              <p class="form-disclaimer">Launches your default mail app with all fields formatted.</p>
+              <p class="form-disclaimer">We'll get back to you within 24 hours.</p>
 
               <div class="form-feedback" id="form-feedback" role="alert"></div>
             </form>
@@ -4144,7 +4177,17 @@
           <ul class="footer-links">
             <li><span style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">Victoria & Greater Area, BC</span></li>
             <li><a href="mailto:info@wellspacecleaning.ca" class="footer-link" id="footer-email">info@wellspacecleaning.ca</a></li>
-            <li><a href="#" class="footer-link" id="footer-whatsapp">WhatsApp Messaging</a></li>
+            <li><a href="sms:+17789904883" class="footer-link">Text / SMS Us</a></li>
+            <li style="margin-top: 0.75rem;">
+              <div class="footer-social-icons">
+                <a href="https://www.facebook.com/wellspacecleaning" target="_blank" rel="noopener" class="footer-social-link" aria-label="WellSpace on Facebook">
+                  <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/wellspace.co/" target="_blank" rel="noopener" class="footer-social-link" aria-label="WellSpace on Instagram">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2"/></svg>
+                </a>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -4159,13 +4202,13 @@
   </footer>
 
   <!-- ==========================================================================
-       FLOATING WHATSAPP CTA
+       FLOATING SMS/TEXT CTA
        ========================================================================== -->
-  <a href="#" id="floating-whatsapp" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat with WellSpace Cleaning on WhatsApp">
-    <span class="whatsapp-tooltip">Chat with us on WhatsApp</span>
-    <div class="whatsapp-badge">
+  <a href="sms:+17789904883" class="sms-float" aria-label="Text WellSpace Cleaning">
+    <span class="sms-tooltip">Send us a Text</span>
+    <div class="sms-badge">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.99c-.002 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
       </svg>
     </div>
   </a>
@@ -4197,23 +4240,7 @@
       const yearEl = document.getElementById('year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-      // Form WhatsApp URL
-      const encodedWaMsg = encodeURIComponent(CONFIG.whatsappDefaultMessage);
-      const waUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodedWaMsg}`;
-
       // Bind Contact Links safely with null checks
-      const heroWa = document.getElementById('hero-whatsapp-link') || document.getElementById('hero-whatsapp-link-scrolly');
-      if (heroWa) heroWa.href = waUrl;
-
-      const contactWa = document.getElementById('contact-whatsapp-link');
-      if (contactWa) contactWa.href = waUrl;
-
-      const floatWa = document.getElementById('floating-whatsapp');
-      if (floatWa) floatWa.href = waUrl;
-
-      const footerWa = document.getElementById('footer-whatsapp');
-      if (footerWa) footerWa.href = waUrl;
-
       const contactEmail = document.getElementById('contact-email-link');
       if (contactEmail) {
         contactEmail.href = `mailto:${CONFIG.ownerEmail}`;
@@ -4752,50 +4779,62 @@
       }
     }
 
-    /* Mailto Form Builder */
+    /* Formspree Quote Form Submission */
     const quoteForm = document.getElementById('quote-form');
     const formFeedback = document.getElementById('form-feedback');
+    /* ─────────────────────────────────────────────────────────────────────────
+       SETUP: Sign up free at https://formspree.io → create a form →
+       replace YOUR_FORMSPREE_ID below with your actual form ID (e.g. xjkqpoze)
+       ───────────────────────────────────────────────────────────────────────── */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
 
-    quoteForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+    if (quoteForm) {
+      quoteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = quoteForm.querySelector('button[type="submit"]');
 
-      const name = document.getElementById('user-name').value.trim();
-      const email = document.getElementById('user-email').value.trim();
-      const phone = document.getElementById('user-phone').value.trim();
-      const area = document.getElementById('user-area').value;
-      const service = document.getElementById('user-service').value;
-      const date = document.getElementById('user-date').value || 'Not specified';
-      const message = document.getElementById('user-message').value.trim();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
 
-      const subject = `[Quote Request] WellSpace Cleaning - ${service} (${area})`;
-      const body = `Hello WellSpace Cleaning Ltd Team,
+        const data = {
+          name: document.getElementById('user-name').value.trim(),
+          email: document.getElementById('user-email').value.trim(),
+          phone: document.getElementById('user-phone').value.trim(),
+          service: document.getElementById('user-service').value,
+          area: document.getElementById('user-area').value,
+          date: document.getElementById('user-date').value || 'Not specified',
+          message: document.getElementById('user-message').value.trim() || 'None',
+          _subject: `[Quote Request] WellSpace Cleaning — ${document.getElementById('user-service').value}`
+        };
 
-I would like to request a quote for cleaning services. Here are my details:
+        try {
+          const response = await fetch(FORMSPREE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(data)
+          });
 
-• Full Name: ${name}
-• Email: ${email}
-• Phone: ${phone}
-• Service Required: ${service}
-• Service Area: ${area}
-• Preferred Date: ${date}
-
-Additional Notes:
-${message ? message : 'None provided'}
-
-Thank you,
-${name}`;
-
-      const mailtoUrl = `mailto:${CONFIG.ownerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-      window.location.href = mailtoUrl;
-
-      formFeedback.style.display = 'block';
-      formFeedback.innerHTML = `
-        <strong>Quote Request Prepared!</strong><br>
-        Your mail client should launch automatically. If it didn't open, 
-        <a href="${mailtoUrl}" style="color: var(--color-dark-navy); font-weight: 700;">Click Here to Send Email Directly</a>.
-      `;
-    });
+          if (response.ok) {
+            quoteForm.reset();
+            formFeedback.style.display = 'block';
+            formFeedback.style.background = 'linear-gradient(135deg,#d1fae5,#a7f3d0)';
+            formFeedback.style.color = '#065f46';
+            formFeedback.innerHTML = `<strong>✅ Quote Request Sent!</strong><br>Thank you! We\'ll get back to you within 24 hours.`;
+            submitBtn.textContent = 'Submit & Send Quote';
+            submitBtn.disabled = false;
+          } else {
+            throw new Error('Server error');
+          }
+        } catch {
+          formFeedback.style.display = 'block';
+          formFeedback.style.background = 'linear-gradient(135deg,#fee2e2,#fecaca)';
+          formFeedback.style.color = '#991b1b';
+          formFeedback.innerHTML = `<strong>⚠️ Couldn\'t send automatically.</strong> Please email us directly at <a href="mailto:info@wellspacecleaning.ca" style="color:#991b1b;font-weight:700">info@wellspacecleaning.ca</a> or call +1 (778) 990-4883.`;
+          submitBtn.textContent = 'Submit & Send Quote';
+          submitBtn.disabled = false;
+        }
+      });
+    }
 
     /* Accessible Mobile Menu Handler */
     function initMobileDrawer() {
