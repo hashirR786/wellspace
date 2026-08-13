@@ -4450,22 +4450,29 @@
       const row1Areas = CONFIG.serviceAreas.slice(0, 10);
       const row2Areas = CONFIG.serviceAreas.slice(10);
 
+      // Populate Dropdown with all areas
       CONFIG.serviceAreas.forEach(area => {
-        // Option
         if (areaSelect) {
           const opt = document.createElement('option');
           opt.value = area;
           opt.textContent = area;
           areaSelect.appendChild(opt);
         }
+      });
 
-        // Footer Link
-        if (footerAreasList) {
+      // Populate Footer with Top 5 Primary Areas + View All 19 Regions link
+      if (footerAreasList) {
+        const topFooterAreas = ["Victoria", "Saanich", "Langford", "Oak Bay", "Esquimalt"];
+        topFooterAreas.forEach(area => {
           const li = document.createElement('li');
           li.innerHTML = `<a href="#quote" onclick="selectAreaForQuote('${area}')" class="footer-link">${area}</a>`;
           footerAreasList.appendChild(li);
-        }
-      });
+        });
+        const viewAllLi = document.createElement('li');
+        viewAllLi.style.marginTop = '0.4rem';
+        viewAllLi.innerHTML = `<a href="#areas" class="footer-link" style="color: #0284C7; font-weight: 700;">View All Regions &rarr;</a>`;
+        footerAreasList.appendChild(viewAllLi);
+      }
 
       // Helper to create marquee chip element
       function createChipNode(area) {
