@@ -1935,16 +1935,57 @@
       z-index: 2;
     }
 
-    .area-chips {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 0.85rem;
-      max-width: 800px;
-      margin: 0 auto 2.5rem auto;
+    /* Dual-Row Marquee Service Areas */
+    .area-marquee-wrapper {
       position: relative;
       z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto 2.25rem auto;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+    }
+
+    .marquee-track-container {
+      display: flex;
+      overflow: hidden;
+      width: 100%;
+      user-select: none;
+      padding: 0.2rem 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .marquee-left .marquee-track {
+      animation: marqueeScrollLeft 38s linear infinite;
+    }
+
+    .marquee-right .marquee-track {
+      animation: marqueeScrollRight 38s linear infinite;
+    }
+
+    .marquee-track-container:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes marqueeScrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes marqueeScrollRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
     }
 
     .chip-item {
@@ -1952,10 +1993,10 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      min-height: 44px;
-      padding: 0.6rem 1.4rem;
+      min-height: 42px;
+      padding: 0.55rem 1.35rem;
       border-radius: var(--radius-full);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--color-white);
       display: inline-flex;
@@ -1965,6 +2006,21 @@
       transition: all var(--transition-fast);
       user-select: none;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .chip-item:hover {
+      background: rgba(2, 132, 199, 0.35);
+      border-color: #0284C7;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.3);
+    }
+
+    .chip-item.active {
+      background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%);
+      border-color: #38BDF8;
+      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.5);
     }
 
     /* Google Maps Button */
@@ -4107,8 +4163,15 @@
           <h2 class="section-title" id="areas-heading">Our Service Areas</h2>
           <p class="section-desc">WellSpace Cleaning Ltd proudly serves residential and commercial clients across Greater Victoria, BC.</p>
           
-          <div class="area-chips" id="area-chips-container" role="list">
-            <!-- Dynamic Chips -->
+          <div class="area-marquee-wrapper" id="area-chips-container" role="region" aria-label="Service Areas Marquee">
+            <!-- Row 1: Scrolls Left -->
+            <div class="marquee-track-container marquee-left">
+              <div class="marquee-track" id="marquee-track-1"></div>
+            </div>
+            <!-- Row 2: Scrolls Right -->
+            <div class="marquee-track-container marquee-right">
+              <div class="marquee-track" id="marquee-track-2"></div>
+            </div>
           </div>
 
           <!-- Embedded Interactive Google Map -->
@@ -4378,10 +4441,14 @@
         footerEmail.textContent = CONFIG.ownerEmail;
       }
 
-      // Populate Service Areas
+      // Populate Service Areas (Dropdown, Footer & Dual Marquee Rows)
       const areaSelect = document.getElementById('user-area');
-      const areaChipsContainer = document.getElementById('area-chips-container');
       const footerAreasList = document.getElementById('footer-areas-list');
+      const track1 = document.getElementById('marquee-track-1');
+      const track2 = document.getElementById('marquee-track-2');
+
+      const row1Areas = CONFIG.serviceAreas.slice(0, 10);
+      const row2Areas = CONFIG.serviceAreas.slice(10);
 
       CONFIG.serviceAreas.forEach(area => {
         // Option
@@ -4392,19 +4459,6 @@
           areaSelect.appendChild(opt);
         }
 
-        // Chip
-        if (areaChipsContainer) {
-          const chip = document.createElement('div');
-          chip.className = 'chip-item';
-          chip.setAttribute('role', 'listitem');
-          chip.innerHTML = `
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
-            ${area}
-          `;
-          chip.addEventListener('click', () => selectAreaForQuote(area, chip));
-          areaChipsContainer.appendChild(chip);
-        }
-
         // Footer Link
         if (footerAreasList) {
           const li = document.createElement('li');
@@ -4412,6 +4466,30 @@
           footerAreasList.appendChild(li);
         }
       });
+
+      // Helper to create marquee chip element
+      function createChipNode(area) {
+        const chip = document.createElement('div');
+        chip.className = 'chip-item';
+        chip.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>${area}</span>
+        `;
+        chip.addEventListener('click', () => selectAreaForQuote(area, chip));
+        return chip;
+      }
+
+      // Populate Row 1 (Left Marquee: Original + Clone)
+      if (track1) {
+        row1Areas.forEach(area => track1.appendChild(createChipNode(area)));
+        row1Areas.forEach(area => track1.appendChild(createChipNode(area)));
+      }
+
+      // Populate Row 2 (Right Marquee: Original + Clone)
+      if (track2) {
+        row2Areas.forEach(area => track2.appendChild(createChipNode(area)));
+        row2Areas.forEach(area => track2.appendChild(createChipNode(area)));
+      }
 
       initScrollReveal();
       initParallax();
