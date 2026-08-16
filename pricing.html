@@ -205,6 +205,16 @@
     .curtain-tagline { font-family: var(--font-body); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.18em; color: #0E2A47; text-transform: uppercase; }
     .curtain-progress-track { width: 100%; height: 3px; background: rgba(14, 42, 71, 0.12); border-radius: 4px; overflow: hidden; margin-top: 0.25rem; }
     .curtain-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #0284C7, #38BDF8); border-radius: 4px; box-shadow: 0 0 10px #38BDF8; transition: width 0.15s ease-out; }
+
+    /* Footer Social Icons */
+    .footer-social-icons { display: flex; gap: 0.85rem; margin-top: 0.75rem; }
+    .footer-social-link { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none; transition: all 0.25s ease; }
+    .footer-social-link:hover { transform: translateY(-3px) scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .footer-social-link svg { width: 19px; height: 19px; fill: currentColor; }
+    .footer-social-link.fb { background: #1877F2; border-color: #1877F2; }
+    .footer-social-link.fb:hover { background: #1565C0; border-color: #1565C0; }
+    .footer-social-link.ig { background: radial-gradient(circle at 30% 110%, #f9a825, #f06292 40%, #9c27b0 70%, #3f51b5 100%); border-color: transparent; }
+    .footer-social-link.ig:hover { background: radial-gradient(circle at 30% 110%, #f9a825, #e91e8c 40%, #8e24aa 70%, #283593 100%); }
   </style>
 </head>
 <body>
@@ -383,6 +393,14 @@
           <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">Phone: +1 (778) 990-4883</p>
           <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">Email: info@wellspacecleaning.ca</p>
           <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Serving Greater Victoria, BC</p>
+          <div class="footer-social-icons">
+            <a href="https://www.facebook.com/profile.php?id=61593305847286" target="_blank" rel="noopener noreferrer" class="footer-social-link fb" aria-label="WellSpace on Facebook">
+              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/wellspace.clean" target="_blank" rel="noopener noreferrer" class="footer-social-link ig" aria-label="WellSpace on Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>

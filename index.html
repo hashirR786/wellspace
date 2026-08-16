@@ -1935,7 +1935,7 @@
       z-index: 2;
     }
 
-    /* Dual-Row Marquee Service Areas */
+    /* Dual-Row Interactive Marquee Service Areas */
     .area-marquee-wrapper {
       position: relative;
       z-index: 2;
@@ -1946,16 +1946,28 @@
       max-width: 960px;
       margin: 0 auto 2.25rem auto;
       overflow: hidden;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
     }
 
     .marquee-track-container {
       display: flex;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       width: 100%;
       user-select: none;
-      padding: 0.2rem 0;
+      -webkit-user-select: none;
+      cursor: grab;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0.3rem 0;
+      scroll-behavior: auto;
+    }
+    .marquee-track-container::-webkit-scrollbar {
+      display: none;
+    }
+    .marquee-track-container.active-drag {
+      cursor: grabbing;
     }
 
     .marquee-track {
@@ -4161,7 +4173,7 @@
         <div class="areas-box reveal-item">
           <span class="section-tag">Coverage</span>
           <h2 class="section-title" id="areas-heading">Our Service Areas</h2>
-          <p class="section-desc">WellSpace Cleaning Ltd proudly serves residential and commercial clients across Greater Victoria, BC.</p>
+          <p class="section-desc">WellSpace Cleaning Ltd proudly serves all 19 communities across Greater Victoria & the Saanich Peninsula.</p>
           
           <div class="area-marquee-wrapper" id="area-chips-container" role="region" aria-label="Service Areas Marquee">
             <!-- Row 1: Scrolls Left -->
@@ -4179,7 +4191,7 @@
             <iframe 
               id="service-area-map"
               title="WellSpace Cleaning Service Area Map - Greater Victoria, BC"
-              src="https://maps.google.com/maps?q=Greater+Victoria,+BC,+Canada&t=&z=11&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Greater+Victoria,+BC,+Canada&t=&z=10&ie=UTF8&iwloc=&output=embed"
               width="100%" 
               height="380" 
               style="border:0; width: 100%; height: 380px; display: block;" 
@@ -4189,13 +4201,13 @@
             </iframe>
           </div>
 
-          <p class="area-note">Click any area chip above to focus the map & pre-select it in your quote request form below.</p>
-          <div style="margin-top: 1.75rem;">
-            <a href="https://maps.google.com/?q=Victoria,+BC,+Canada" target="_blank" rel="noopener" class="btn-google-maps">
+          <p class="area-note" style="margin-top: 1rem;">Click any area chip above to focus the map & pre-select your community in the quote form below.</p>
+          <div style="margin-top: 1.25rem;">
+            <a href="https://maps.google.com/?q=Greater+Victoria,+BC,+Canada" target="_blank" rel="noopener" class="btn-google-maps" id="btn-external-maps">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
               </svg>
-              <span>Open Victoria Service Map in Google Maps</span>
+              <span>Open Greater Victoria Coverage Map in Google Maps</span>
             </a>
           </div>
         </div>
@@ -4356,10 +4368,10 @@
             <li><a href="sms:+17789904883" class="footer-link">Text / SMS Us</a></li>
             <li style="margin-top: 0.75rem;">
               <div class="footer-social-icons">
-                <a href="https://www.facebook.com/wellspacecleaning" target="_blank" rel="noopener" class="footer-social-link fb" aria-label="WellSpace on Facebook">
+                <a href="https://www.facebook.com/profile.php?id=61593305847286" target="_blank" rel="noopener noreferrer" class="footer-social-link fb" aria-label="WellSpace on Facebook">
                   <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
-                <a href="https://www.instagram.com/wellspace.co/" target="_blank" rel="noopener" class="footer-social-link ig" aria-label="WellSpace on Instagram">
+                <a href="https://www.instagram.com/wellspace.clean" target="_blank" rel="noopener noreferrer" class="footer-social-link ig" aria-label="WellSpace on Instagram">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
                 </a>
               </div>
@@ -4506,6 +4518,7 @@
       initHeroParticles();
       initMagneticButtons();
       initAnimatedCounters();
+      initInteractiveMarquee();
       initScrollytellingEngine();
     });
 
@@ -4974,12 +4987,111 @@
         mapIframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(areaName + ', BC, Canada')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
       }
 
+      const extMapBtn = document.getElementById('btn-external-maps');
+      if (extMapBtn && areaName) {
+        extMapBtn.href = `https://maps.google.com/?q=${encodeURIComponent(areaName + ', BC, Canada')}`;
+        const span = extMapBtn.querySelector('span');
+        if (span) span.textContent = `Open ${areaName} in Google Maps`;
+      }
+
       if (chipElement) {
         document.querySelectorAll('.chip-item').forEach(c => c.classList.remove('active'));
         chipElement.classList.add('active');
       }
+      // Note: Kept on the map section as requested so user can explore regions without auto-scrolling to quote
+    }
 
-      smoothScrollTo('#quote');
+    /* Dual Marquee: Smooth Auto-Glide + Drag / Swipe / Scroll Left & Right */
+    function initInteractiveMarquee() {
+      const rows = [
+        { container: document.querySelector('.marquee-track-container.marquee-left'), baseSpeed: 0.55, dir: 1 },
+        { container: document.querySelector('.marquee-track-container.marquee-right'), baseSpeed: 0.55, dir: -1 }
+      ];
+
+      rows.forEach(({ container, baseSpeed, dir }) => {
+        if (!container) return;
+
+        const track = container.querySelector('.marquee-track');
+        if (track) {
+          track.style.animation = 'none'; // Controlled seamlessly by JS engine for interactive drag
+        }
+
+        let isDown = false;
+        let startX = 0;
+        let scrollStart = 0;
+        let isUserInteracting = false;
+        let resumeTimeout = null;
+
+        // Position initial offset for the right-moving track
+        if (dir === -1) {
+          container.scrollLeft = Math.max(100, container.scrollWidth / 4);
+        }
+
+        function step() {
+          if (!isUserInteracting && !isDown) {
+            container.scrollLeft += baseSpeed * dir;
+            const max = container.scrollWidth / 2;
+            if (dir === 1 && container.scrollLeft >= max) {
+              container.scrollLeft -= max;
+            } else if (dir === -1 && container.scrollLeft <= 0) {
+              container.scrollLeft += max;
+            }
+          }
+          requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+
+        // Mouse Drag Support
+        container.addEventListener('mousedown', (e) => {
+          isDown = true;
+          isUserInteracting = true;
+          clearTimeout(resumeTimeout);
+          container.classList.add('active-drag');
+          startX = e.pageX - container.offsetLeft;
+          scrollStart = container.scrollLeft;
+        });
+
+        window.addEventListener('mouseup', () => {
+          if (isDown) {
+            isDown = false;
+            container.classList.remove('active-drag');
+            resumeTimeout = setTimeout(() => { isUserInteracting = false; }, 2000);
+          }
+        });
+
+        container.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - container.offsetLeft;
+          const walk = (x - startX) * 1.6;
+          container.scrollLeft = scrollStart - walk;
+        });
+
+        // Touch Swipe Support for Mobile & Tablet
+        container.addEventListener('touchstart', () => {
+          isUserInteracting = true;
+          clearTimeout(resumeTimeout);
+        }, { passive: true });
+
+        container.addEventListener('touchend', () => {
+          resumeTimeout = setTimeout(() => { isUserInteracting = false; }, 2500);
+        }, { passive: true });
+
+        // Wheel / Trackpad horizontal scroll support
+        container.addEventListener('wheel', () => {
+          isUserInteracting = true;
+          clearTimeout(resumeTimeout);
+          resumeTimeout = setTimeout(() => { isUserInteracting = false; }, 2000);
+        }, { passive: true });
+
+        // Hover pause
+        container.addEventListener('mouseenter', () => {
+          if (!isDown) isUserInteracting = true;
+        });
+        container.addEventListener('mouseleave', () => {
+          if (!isDown) isUserInteracting = false;
+        });
+      });
     }
 
     function smoothScrollTo(targetSelector) {
