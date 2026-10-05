@@ -4600,10 +4600,10 @@
         return;
       }
 
-      // DESKTOP ENGINE: 300-Frame WebP — Smooth Lerp Render Loop
-      const TOTAL_FRAMES = 300;
-      const EAGER_FRAMES = 30;
-      const LERP_SPEED = 0.14; // 0.0 = no movement, 1.0 = instant snap — 0.14 feels cinematic
+      // DESKTOP ENGINE: single all-intra H.264 video, scrubbed via canvas.
+      // The browser's video decoder holds one decoded frame at a time instead of
+      // 300 ImageBitmaps in memory — this is what fixed the ~2.5GB memory usage.
+      const LERP_SPEED = 0.22; // 0.0 = no movement, 1.0 = instant snap
 
       const canvas = document.getElementById('canvas-300');
       const outer = document.getElementById('scrolly-outer');
@@ -4613,14 +4613,17 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const ctx = canvas.getContext('2d');
 
-      // Store pre-decoded ImageBitmaps for instant draws (no per-frame decode stall)
-      const bitmaps = new Array(TOTAL_FRAMES).fill(null);
-      let loadedCount = 0;
-      let firstFrameReady = false;
+      // Never appended to the DOM — just a decode source for drawImage.
+      const video = document.createElement('video');
+      video.src = './public/video/hero-scroll.mp4';
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
 
-      // Two separate frame pointers: target (from scroll) and current (lerped display)
-      let targetFrame = 0;   // Where scroll says we should be
-      let currentFrame = 0;  // What's actually displayed (smoothly chases targetFrame)
+      let videoReady = false;
+      // Two separate time pointers: target (from scroll) and current (lerped display)
+      let targetTime = 0;   // Where scroll says we should be
+      let currentTime = 0;  // What's actually displayed (smoothly chases targetTime)
 
       const beats = [
         { el: document.getElementById('beat-1'), min: 0.00, max: 0.18 },
@@ -4629,55 +4632,6 @@
         { el: document.getElementById('beat-4'), min: 0.65, max: 0.85 },
         { el: document.getElementById('beat-5'), min: 0.85, max: 1.01 }
       ];
-
-      function getFramePath(n) {
-        return `./public/frames300-webp/ezgif-frame-${String(n).padStart(3, '0')}.webp`;
-      }
-
-      function loadFrame(frameNumber) {
-        const idx = frameNumber - 1;
-        if (bitmaps[idx] !== null) return; // already loaded or in flight
-        bitmaps[idx] = false; // mark in-flight
-        const img = new Image();
-        img.decoding = 'async';
-        img.onload = () => {
-          // Pre-decode to ImageBitmap: GPU-ready, no per-draw stall
-          if (window.createImageBitmap) {
-            createImageBitmap(img).then(bmp => {
-              bitmaps[idx] = bmp;
-              loadedCount++;
-              if (!firstFrameReady && frameNumber === 1) {
-                firstFrameReady = true;
-                resizeCanvas();
-                startRenderLoop();
-              }
-              if (window.updateCurtainProgress) {
-                window.updateCurtainProgress(Math.min(loadedCount, EAGER_FRAMES), EAGER_FRAMES);
-              }
-            });
-          } else {
-            bitmaps[idx] = img;
-            loadedCount++;
-            if (!firstFrameReady && frameNumber === 1) {
-              firstFrameReady = true;
-              resizeCanvas();
-              startRenderLoop();
-            }
-            if (window.updateCurtainProgress) {
-              window.updateCurtainProgress(Math.min(loadedCount, EAGER_FRAMES), EAGER_FRAMES);
-            }
-          }
-        };
-        img.src = getFramePath(frameNumber);
-      }
-
-      // Phase 1: Eager-load first 30 frames
-      for (let j = 1; j <= EAGER_FRAMES; j++) loadFrame(j);
-
-      // Phase 2: Background-load remaining frames after 600ms
-      setTimeout(() => {
-        for (let j = EAGER_FRAMES + 1; j <= TOTAL_FRAMES; j++) loadFrame(j);
-      }, 600);
 
       function resizeCanvas() {
         const sticky = document.querySelector('.scrollytelling-sticky');
@@ -4690,68 +4644,90 @@
       }
       window.addEventListener('resize', () => { resizeCanvas(); }, { passive: true });
 
-      function drawFrame(idx) {
-        const bmp = bitmaps[idx];
-        if (!bmp) return; // not loaded yet — keep showing previous frame
+      function drawFrame() {
+        if (!videoReady) return;
+        const iw = video.videoWidth, ih = video.videoHeight;
+        if (!iw || !ih) return;
         const cw = canvas.width, ch = canvas.height;
-        const iw = bmp.width || bmp.naturalWidth;
-        const ih = bmp.height || bmp.naturalHeight;
         const scale = Math.max(cw / iw, ch / ih);
         ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(bmp, (cw - iw * scale) / 2, (ch - ih * scale) / 2, iw * scale, ih * scale);
+        ctx.drawImage(video, (cw - iw * scale) / 2, (ch - ih * scale) / 2, iw * scale, ih * scale);
       }
 
-      // Continuous smooth render loop — lerps currentFrame toward targetFrame every tick
-      let renderLoopRunning = false;
-      function startRenderLoop() {
-        if (renderLoopRunning) return;
-        renderLoopRunning = true;
-        let lastDrawnFrame = -1;
+      const heroOverlay = document.getElementById('hero-brand-overlay');
+      const siteHeader = document.getElementById('site-header');
 
-        function tick() {
-          requestAnimationFrame(tick);
-
-          // Smooth lerp: currentFrame chases targetFrame at LERP_SPEED per frame
-          currentFrame += (targetFrame - currentFrame) * LERP_SPEED;
-
-          const frameIdx = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(currentFrame)));
-
-          // Only redraw if the rounded frame has changed — avoids unnecessary canvas writes
-          if (frameIdx !== lastDrawnFrame) {
-            drawFrame(frameIdx);
-            lastDrawnFrame = frameIdx;
-          }
-        }
-        tick();
-      }
-
-      // Scroll handler: only updates targetFrame — no drawing here
-      let scrollProgress = 0;
-      function onScrollDesktop() {
+      // Reads scroll position fresh every tick instead of relying on the 'scroll'
+      // event (which the browser can throttle/coalesce during fast flicks) —
+      // this is what keeps the lerp target from stair-stepping under fast scrolls.
+      function updateScrollDerivedState() {
         const rect = outer.getBoundingClientRect();
         const totalScrollable = outer.offsetHeight - window.innerHeight;
-        scrollProgress = Math.max(0, Math.min(1, -rect.top / totalScrollable));
+        const scrollProgress = Math.max(0, Math.min(1, -rect.top / totalScrollable));
 
-        // Update target frame from scroll position
-        targetFrame = scrollProgress * (TOTAL_FRAMES - 1);
+        if (video.duration) {
+          targetTime = scrollProgress * video.duration;
+        }
 
-        // Beat text transitions
         beats.forEach(b => {
           if (b.el) {
             b.el.classList.toggle('active', scrollProgress >= b.min && scrollProgress < b.max);
           }
         });
 
-        // Header / logo overlay transition
-        const heroOverlay = document.getElementById('hero-brand-overlay');
-        const siteHeader = document.getElementById('site-header');
         const isPastHero = rect.bottom <= window.innerHeight + 10;
         if (heroOverlay) heroOverlay.classList.toggle('hidden', isPastHero);
         if (siteHeader) siteHeader.classList.toggle('visible', isPastHero);
       }
 
-      window.addEventListener('scroll', onScrollDesktop, { passive: true });
-      onScrollDesktop();
+      // Continuous smooth render loop — lerps currentTime toward targetTime every tick
+      let renderLoopRunning = false;
+      let settleFrames = 0; // keep drawing a few frames after a seek (or on startup) so the async decode catches up
+      function startRenderLoop() {
+        if (renderLoopRunning) return;
+        renderLoopRunning = true;
+
+        function tick() {
+          requestAnimationFrame(tick);
+
+          updateScrollDerivedState();
+
+          const isMoving = Math.abs(targetTime - currentTime) > 0.0005;
+
+          // Smooth lerp: currentTime chases targetTime at LERP_SPEED per frame
+          currentTime += (targetTime - currentTime) * LERP_SPEED;
+
+          // Only re-seek when the change is meaningful — avoids flooding the decoder
+          if (Math.abs(video.currentTime - currentTime) > 0.004) {
+            try { video.currentTime = currentTime; } catch (e) { /* ignore seeks before seekable range is ready */ }
+            settleFrames = 6;
+          }
+
+          // Skip drawing entirely once idle — avoids pinning CPU with pointless redraws
+          if (isMoving || settleFrames > 0) {
+            drawFrame();
+            if (!isMoving && settleFrames > 0) settleFrames--;
+          }
+        }
+        tick();
+      }
+
+      video.addEventListener('loadedmetadata', () => {
+        videoReady = true;
+        resizeCanvas();
+        // videoWidth/videoHeight aren't always populated the instant loadedmetadata
+        // fires, so retry drawing for a few frames instead of a single one-shot call.
+        settleFrames = 20;
+        startRenderLoop();
+        // Report as fully loaded (matches the old EAGER_FRAMES=30 signal) so the
+        // curtain's OPEN_THRESHOLD (28) check opens immediately — metadata-only
+        // load is effectively instant, unlike waiting on 30 decoded frames before.
+        if (window.updateCurtainProgress) {
+          window.updateCurtainProgress(30, 30);
+        }
+      }, { once: true });
+      video.load();
+      updateScrollDerivedState();
     }
 
 
